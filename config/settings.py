@@ -13,8 +13,9 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
-    f'http://{host}:8888' for host in ALLOWED_HOSTS if host != '*'
-] + ['http://elibrary.autplatform.uz:8888']
+    'https://elibrary.autplatform.uz',
+    'http://elibrary.autplatform.uz',
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',

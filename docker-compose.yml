@@ -5,11 +5,8 @@ services:
       - "8001:8000"
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
-      - static_files:/app/staticfiles
+      - ./staticfiles:/app/staticfiles
       - ./media:/app/media
     env_file:
       - .env
     restart: unless-stopped
-
-volumes:
-  static_files:

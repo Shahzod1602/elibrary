@@ -13,7 +13,7 @@ DEBUG = os.getenv('DEBUG', 'False') == 'True'
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*').split(',')
 
 CSRF_TRUSTED_ORIGINS = [
-    f'http://{host}' for host in ALLOWED_HOSTS if host != '*'
+    f'http://{host}:8888' for host in ALLOWED_HOSTS if host != '*'
 ]
 
 INSTALLED_APPS = [

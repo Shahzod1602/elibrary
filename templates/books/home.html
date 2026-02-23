@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AUT Kutubxona — Bilim Markazi{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="hero text-center">
+    <div class="container position-relative">
+        <h1 data-i18n="hero.title">Bilim olish — eng ulug' ibodat</h1>
+        <p class="lead" data-i18n="hero.subtitle">603+ kitob, 37 eKitob, raqamli resurslar va ilmiy bazalar bir joyda</p>
+        <div class="hero-search">
+            <form action="{% url 'catalog' %}" method="GET">
+                <div class="input-group">
+                    <input type="text" name="q" class="form-control"
+                           placeholder="Kitob nomi, muallif yoki ISBN qidiring..."
+                           data-i18n-placeholder="hero.placeholder">
+                    <button class="btn" type="submit">
+                        <i class="bi bi-search"></i> <span data-i18n="hero.search">Qidirish</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<div class="container">
+    <div class="stats-bar" data-aos="fade-up">
+        <div class="row">
+            <div class="col-4">
+                <div class="stat-item">
+                    <div class="stat-number">{{ physical_books }}+</div>
+                    <div class="stat-label" data-i18n="stats.physicalBooks">Jismoniy kitoblar</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="stat-item">
+                    <div class="stat-number">{{ ebooks }}</div>
+                    <div class="stat-label" data-i18n="stats.ebooks">eKitoblar</div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="stat-item">
+                    <div class="stat-number">{{ total_categories }}</div>
+                    <div class="stat-label" data-i18n="stats.categories">Kategoriyalar</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CATEGORIES -->
+<section class="container mt-5">
+    <div class="section-header" data-aos="fade-up">
+        <h2 data-i18n="section.categories">Kategoriyalar</h2>
+        <a href="{% url 'catalog' %}"><span data-i18n="section.viewAll">Barchasini ko'rish</span> <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
+        {% for cat in categories %}
+        <div class="col" data-aos="fade-up">
+            <a href="{% url 'catalog' %}?category={{ cat.id }}" class="text-decoration-none">
+                <div class="category-card {% cycle 'cat-teal' 'cat-purple' 'cat-lime' 'cat-gold' 'cat-accent' 'cat-primary' %}">
+                    <div class="cat-icon"><i class="bi {{ cat.icon }}"></i></div>
+                    <div class="cat-name">{{ cat.name }}</div>
+                    <div class="cat-count">{{ cat.book_count }} <span data-i18n="book.count">kitob</span></div>
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- NEW BOOKS -->
+<section class="container mt-5">
+    <div class="section-header" data-aos="fade-up">
+        <h2 data-i18n="section.newBooks">Yangi qo'shilgan kitoblar</h2>
+        <a href="{% url 'catalog' %}?sort=newest"><span data-i18n="section.viewAll">Barchasini ko'rish</span> <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for book in new_books %}
+        <div class="col" data-aos="fade-up">
+            <div class="book-card">
+                <a href="{% url 'book_detail' book.pk %}">
+                    <div class="card-cover">
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <div class="card-cover-placeholder">
+                                <i class="bi bi-book"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+                <div class="card-body">
+                    <div class="book-title">
+                        <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a>
+                    </div>
+                    <div class="book-author">{{ book.author }}</div>
+                    <div class="card-footer-custom">
+                        {% if book.category %}
+                            <span class="badge-cat">{{ book.category }}</span>
+                        {% endif %}
+                        <span class="rating">
+                            {% if book.avg_rating %}
+                                <i class="bi bi-star-fill"></i> {{ book.avg_rating }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- POPULAR BOOKS -->
+<section class="container mt-5 mb-4">
+    <div class="section-header" data-aos="fade-up">
+        <h2 data-i18n="section.popularBooks">Mashhur kitoblar</h2>
+        <a href="{% url 'catalog' %}?sort=popular"><span data-i18n="section.viewAll">Barchasini ko'rish</span> <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+        {% for book in popular_books %}
+        <div class="col" data-aos="fade-up">
+            <div class="book-card">
+                <a href="{% url 'book_detail' book.pk %}">
+                    <div class="card-cover">
+                        {% if book.cover %}
+                            <img src="{{ book.cover.url }}" alt="{{ book.title }}">
+                        {% else %}
+                            <div class="card-cover-placeholder">
+                                <i class="bi bi-book"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </a>
+                <div class="card-body">
+                    <div class="book-title">
+                        <a href="{% url 'book_detail' book.pk %}">{{ book.title }}</a>
+                    </div>
+                    <div class="book-author">{{ book.author }}</div>
+                    <div class="card-footer-custom">
+                        {% if book.category %}
+                            <span class="badge-cat">{{ book.category }}</span>
+                        {% endif %}
+                        <span class="rating">
+                            <i class="bi bi-eye"></i> {{ book.views_count }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+{% block title %}Shaxsiy kabinet — AUT Kutubxona{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <div class="d-flex align-items-center gap-4">
+            <div class="profile-avatar">{{ user.username|first|upper }}</div>
+            <div>
+                <h3 class="fw-bold mb-1">{{ user.username }}</h3>
+                <p class="mb-0" style="opacity:0.8;">
+                    <i class="bi bi-envelope"></i> {{ user.email|default:"Email ko'rsatilmagan" }}
+                </p>
+                <p class="mb-0" style="opacity:0.6; font-size:0.85rem;">
+                    <i class="bi bi-calendar3"></i> {{ user.date_joined|date:"d M, Y" }} <span data-i18n="profile.memberSince">dan beri a'zo</span>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs mb-4" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active fw-bold" data-bs-toggle="tab" href="#favorites">
+                <i class="bi bi-heart"></i> <span data-i18n="profile.favorites">Sevimlilar</span> ({{ favorites|length }})
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link fw-bold" data-bs-toggle="tab" href="#reviews">
+                <i class="bi bi-chat-left-text"></i> <span data-i18n="profile.myReviews">Sharhlarim</span> ({{ user_reviews|length }})
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <!-- Favorites -->
+        <div class="tab-pane fade show active" id="favorites">
+            {% if favorites %}
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                {% for fav in favorites %}
+                <div class="col">
+                    <div class="book-card">
+                        <a href="{% url 'book_detail' fav.book.pk %}">
+                            <div class="card-cover">
+                                {% if fav.book.cover %}
+                                    <img src="{{ fav.book.cover.url }}" alt="{{ fav.book.title }}">
+                                {% else %}
+                                    <div class="card-cover-placeholder">
+                                        <i class="bi bi-book"></i>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </a>
+                        <div class="card-body">
+                            <div class="book-title">
+                                <a href="{% url 'book_detail' fav.book.pk %}">{{ fav.book.title }}</a>
+                            </div>
+                            <div class="book-author">{{ fav.book.author }}</div>
+                            <div class="card-footer-custom">
+                                {% if fav.book.category %}
+                                    <span class="badge-cat">{{ fav.book.category }}</span>
+                                {% endif %}
+                                <a href="{% url 'toggle_favorite' fav.book.pk %}" class="text-danger"
+                                   title="O'chirish" data-i18n-title="profile.delete"><i class="bi bi-heart-fill"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-heart display-1 text-muted"></i>
+                <h5 class="mt-3 text-muted" data-i18n="profile.noFavorites">Sevimli kitoblaringiz yo'q</h5>
+                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2" data-i18n="profile.goToCatalog">Katalogga o'tish</a>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Reviews -->
+        <div class="tab-pane fade" id="reviews">
+            {% if user_reviews %}
+            {% for review in user_reviews %}
+            <div class="review-item" style="background:white; padding:1.5rem; border-radius:var(--radius); margin-bottom:1rem; box-shadow:var(--shadow-sm);">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="fw-bold mb-1">
+                            <a href="{% url 'book_detail' review.book.pk %}">{{ review.book.title }}</a>
+                        </h6>
+                        <div style="color:var(--gold);">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="bi bi-star-fill"></i>
+                                {% else %}
+                                    <i class="bi bi-star"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span class="text-muted" style="font-size:0.8rem;">{{ review.created_at|timesince }} <span data-i18n="review.ago">oldin</span></span>
+                </div>
+                <p class="text-muted mt-2 mb-0">{{ review.comment }}</p>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="text-center py-5">
+                <i class="bi bi-chat-left-text display-1 text-muted"></i>
+                <h5 class="mt-3 text-muted" data-i18n="profile.noReviews">Hali sharh qoldirmagansiz</h5>
+                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2" data-i18n="profile.viewBooks">Kitoblarni ko'rish</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

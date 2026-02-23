@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}Kutubxona - Kitoblar{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="hero-section text-center">
+    <h1 class="fw-bold mb-3"><i class="bi bi-book"></i> Kutubxona</h1>
+    <p class="lead mb-4">Bilim olish — eng ulug' ibodat</p>
+    <div class="search-box">
+        <form method="GET" action="{% url 'book_list' %}">
+            <div class="input-group input-group-lg">
+                <input type="text" name="q" class="form-control" placeholder="Kitob yoki muallif qidiring..."
+                       value="{{ query }}">
+                <button class="btn btn-light" type="submit">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Kategoriyalar -->
+<div class="mb-4">
+    <a href="{% url 'book_list' %}"
+       class="btn btn-sm {% if not selected_category %}btn-primary{% else %}btn-outline-primary{% endif %} me-1 mb-1">
+        Barchasi
+    </a>
+    {% for cat in categories %}
+        <a href="?category={{ cat.id }}"
+           class="btn btn-sm {% if selected_category == cat.id|stringformat:'d' %}btn-primary{% else %}btn-outline-primary{% endif %} me-1 mb-1">
+            {{ cat.name }}
+        </a>
+    {% endfor %}
+</div>
+
+<!-- Kitoblar -->
+{% if books %}
+<div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+    {% for book in books %}
+    <div class="col">
+        <div class="card book-card shadow-sm h-100">
+            <a href="{% url 'book_detail' book.pk %}" class="text-decoration-none">
+                {% if book.cover %}
+                    <img src="{{ book.cover.url }}" class="card-img-top book-cover" alt="{{ book.title }}">
+                {% else %}
+                    <div class="book-cover-placeholder">
+                        <i class="bi bi-book"></i>
+                    </div>
+                {% endif %}
+            </a>
+            <div class="card-body">
+                <h6 class="card-title mb-1">
+                    <a href="{% url 'book_detail' book.pk %}" class="text-decoration-none text-dark">
+                        {{ book.title }}
+                    </a>
+                </h6>
+                <p class="text-muted small mb-2">{{ book.author }}</p>
+                {% if book.category %}
+                    <span class="badge bg-primary category-badge">{{ book.category }}</span>
+                {% endif %}
+                <span class="badge bg-secondary category-badge">{{ book.language }}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="bi bi-search display-1 text-muted"></i>
+    <h4 class="mt-3 text-muted">Kitob topilmadi</h4>
+    <p class="text-muted">Boshqa so'z bilan qidirib ko'ring</p>
+</div>
+{% endif %}
+{% endblock %}

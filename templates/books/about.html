@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+
+{% block title %}Biz haqimizda — AUT Kutubxona{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="about-hero">
+    <div class="container">
+        <h1 class="fw-bold mb-3" data-i18n="about.title">Biz haqimizda</h1>
+        <p class="lead mb-0" style="opacity:0.9; max-width:600px; margin:0 auto;" data-i18n="about.subtitle">
+            AUT Kutubxona — bilim, ilm-fan va zamonaviy ta'lim resurslari markazi
+        </p>
+    </div>
+</section>
+
+<div class="container my-5">
+    <div class="row g-5">
+        <div class="col-lg-8">
+
+            <!-- Kutubxona haqida -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2.5rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h3 class="fw-bold mb-4" data-i18n="about.heading">Kutubxona haqida</h3>
+                <p class="text-muted" style="line-height:1.8;" data-i18n="about.p1">
+                    AUT Kutubxonasi universitetimizning markaziy bilim markazi bo'lib, jismoniy fondda 603 ta kitob
+                    va 37 ta eKitob mavjud. Kutubxonamiz studentlar, o'qituvchilar va tadqiqotchilar uchun keng
+                    qamrovli ta'lim resurslari taqdim etadi.
+                </p>
+                <p class="text-muted" style="line-height:1.8;" data-i18n="about.p2">
+                    Kitoblarni qarz olish uchun kutubxona a'zosi bo'lish kerak. Har bir a'zo bir vaqtning o'zida
+                    3 tagacha kitob olishi mumkin. Kitoblar 14 kun muddatga beriladi, muddatni bir marta 7 kunga
+                    uzaytirish mumkin.
+                </p>
+            </div>
+
+            <!-- Kutubxona qoidalari -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2.5rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-clipboard-check text-primary me-2"></i>
+                    <span data-i18n="about.rulesTitle">Kutubxona qoidalari</span>
+                </h3>
+                <ul class="list-unstyled">
+                    <li class="d-flex align-items-start gap-2 mb-3">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span class="text-muted" data-i18n="about.rule1">Kutubxonaga ro'yxatdan o'tish uchun talaba guvohnomasi yoki xodim ID kartasi talab qilinadi.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2 mb-3">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span class="text-muted" data-i18n="about.rule2">Kitoblar 14 kun muddatga beriladi. Muddatni bir marta 7 kunga uzaytirish mumkin.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2 mb-3">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span class="text-muted" data-i18n="about.rule3">Muddatidan kechiktirilgan har bir kun uchun 1,000 so'm jarima belgilanadi.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2 mb-3">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span class="text-muted" data-i18n="about.rule4">Kutubxonaga shaxsiy sumkalar bilan kirilmaydi — maxsus shkafchalar mavjud.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2 mb-3">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span class="text-muted" data-i18n="about.rule5">O'qish zalida ovqatlanish va baland ovozda gaplashish taqiqlanadi.</span>
+                    </li>
+                    <li class="d-flex align-items-start gap-2">
+                        <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                        <span class="text-muted" data-i18n="about.rule6">Yo'qolgan yoki shikastlangan kitob uchun to'liq qiymati qoplanadi.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Yordam -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2.5rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-headset text-primary me-2"></i>
+                    <span data-i18n="about.helpTitle">Yordam</span>
+                </h3>
+                <p class="text-muted" style="line-height:1.8;" data-i18n="about.helpDesc">
+                    Kutubxonachilarimiz sizga kerakli kitobni topish, raqamli resurslardan foydalanish va ilmiy
+                    tadqiqotlar uchun manba izlashda yordam beradi. Telegram bot orqali ham yordam olishingiz
+                    mumkin: @AI_librarianbot
+                </p>
+            </div>
+
+            <!-- Book Club -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2.5rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-people-fill text-primary me-2"></i>
+                    <span data-i18n="about.bookClubTitle">Book Club</span>
+                </h3>
+                <p class="text-muted" style="line-height:1.8;" data-i18n="about.bookClubDesc">
+                    Har 2 haftada bir kitob tanlanadi va guruh a'zolari orasida munozara o'tkaziladi.
+                    Kitob klubi — bu bilim almashish, yangi g'oyalar kashf etish va o'qish madaniyatini
+                    rivojlantirish uchun ajoyib imkoniyat.
+                </p>
+                <p class="text-muted" style="line-height:1.8;" data-i18n="about.bookClubJoin">
+                    Ro'yxatdan o'tish uchun kutubxonaga murojaat qiling yoki Telegram bot orqali yozing.
+                </p>
+            </div>
+
+            <!-- Raqamli resurslar -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2.5rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-cloud-download text-primary me-2"></i>
+                    <span data-i18n="about.digitalTitle">Raqamli resurslar</span>
+                </h3>
+                <p class="text-muted mb-3" data-i18n="about.digitalDesc">
+                    AUT kutubxonasi a'zolari quyidagi raqamli resurslarga bepul kirish huquqiga ega:
+                </p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold"><i class="bi bi-journal-code text-primary me-1"></i> ACM Digital Library</h6>
+                            <p class="text-muted small mb-0" data-i18n="about.acmDesc">Kompyuter fanlari bo'yicha dunyodagi eng katta raqamli kutubxona.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold"><i class="bi bi-book text-primary me-1"></i> Britannica Academic</h6>
+                            <p class="text-muted small mb-0" data-i18n="about.britannicaDesc">Ilmiy maqolalar, multimedia va ishonchli ma'lumotnoma.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold"><i class="bi bi-globe2 text-primary me-1"></i> eLibraryUSA</h6>
+                            <p class="text-muted small mb-0" data-i18n="about.elibraryDesc">AQSh elchixonasi tomonidan taqdim etilgan elektron kutubxona.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bepul ta'lim platformalari -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2.5rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-mortarboard text-primary me-2"></i>
+                    <span data-i18n="about.freePlatformsTitle">Bepul ta'lim platformalari</span>
+                </h3>
+                <p class="text-muted mb-3" data-i18n="about.freePlatformsDesc">
+                    Quyidagi ochiq ta'lim platformalaridan bepul foydalanishingiz mumkin:
+                </p>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold"><i class="bi bi-book-half text-success me-1"></i> BCCampus OpenEd</h6>
+                            <p class="text-muted small mb-0" data-i18n="about.bccampusDesc">Ochiq darsliklar va ta'lim resurslari platformasi.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold"><i class="bi bi-mortarboard-fill text-success me-1"></i> MIT OpenCourseWare</h6>
+                            <p class="text-muted small mb-0" data-i18n="about.mitDesc">MIT universitetining bepul ochiq kurslari va materiallari.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="border rounded p-3 h-100">
+                            <h6 class="fw-bold"><i class="bi bi-gear-fill text-success me-1"></i> OER Engineering</h6>
+                            <p class="text-muted small mb-0" data-i18n="about.oerDesc">Muhandislik sohasidagi ochiq ta'lim resurslari.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Xalqaro ochiq kutubxonalar va bazalar -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2.5rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h3 class="fw-bold mb-4">
+                    <i class="bi bi-globe text-primary me-2"></i>
+                    <span data-i18n="about.intlTitle">Xalqaro ochiq kutubxonalar va bazalar</span>
+                </h3>
+                <p class="text-muted mb-3" data-i18n="about.intlDesc">
+                    Quyidagi xalqaro platformalarda millionlab kitob va ilmiy maqolalarga bepul kirish mumkin:
+                </p>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://openlibrary.org" target="_blank" rel="noopener">Open Library</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.gutenberg.org" target="_blank" rel="noopener">Project Gutenberg</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://scholar.google.com" target="_blank" rel="noopener">Google Scholar</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://arxiv.org" target="_blank" rel="noopener">arXiv</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://doaj.org" target="_blank" rel="noopener">DOAJ</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.jstor.org" target="_blank" rel="noopener">JSTOR Open</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.semanticscholar.org" target="_blank" rel="noopener">Semantic Scholar</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://core.ac.uk" target="_blank" rel="noopener">CORE</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.base-search.net" target="_blank" rel="noopener">BASE</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://unpaywall.org" target="_blank" rel="noopener">Unpaywall</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.sciencedirect.com" target="_blank" rel="noopener">ScienceDirect (Open Access)</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" rel="noopener">PubMed</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.springeropen.com" target="_blank" rel="noopener">SpringerOpen</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.mdpi.com" target="_blank" rel="noopener">MDPI</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.frontiersin.org" target="_blank" rel="noopener">Frontiers</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.hindawi.com" target="_blank" rel="noopener">Hindawi</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://plos.org" target="_blank" rel="noopener">PLOS</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.biorxiv.org" target="_blank" rel="noopener">bioRxiv</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.medrxiv.org" target="_blank" rel="noopener">medRxiv</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://ssrn.com" target="_blank" rel="noopener">SSRN</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://philpapers.org" target="_blank" rel="noopener">PhilPapers</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.europeana.eu" target="_blank" rel="noopener">Europeana</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.worldcat.org" target="_blank" rel="noopener">WorldCat</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.loc.gov" target="_blank" rel="noopener">Library of Congress</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.wdl.org" target="_blank" rel="noopener">World Digital Library</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://standardebooks.org" target="_blank" rel="noopener">Standard Ebooks</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://manybooks.net" target="_blank" rel="noopener">ManyBooks</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.oapen.org" target="_blank" rel="noopener">OAPEN</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://directory.doabooks.org" target="_blank" rel="noopener">DOAB</a></li>
+                            <li class="mb-2"><i class="bi bi-link-45deg text-primary me-1"></i> <a href="https://www.intechopen.com" target="_blank" rel="noopener">IntechOpen</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Stats -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h5 class="fw-bold mb-3" data-i18n="about.inNumbers">Raqamlarda</h5>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <span class="text-muted" data-i18n="about.physicalBooks">Jismoniy kitoblar</span>
+                    <strong style="color:var(--primary); font-size:1.2rem;">{{ physical_books }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <span class="text-muted" data-i18n="about.ebooks">eKitoblar</span>
+                    <strong style="color:var(--primary); font-size:1.2rem;">{{ ebooks }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                    <span class="text-muted" data-i18n="about.totalCategories">Kategoriyalar</span>
+                    <strong style="color:var(--primary); font-size:1.2rem;">{{ total_categories }}</strong>
+                </div>
+                <div class="d-flex justify-content-between align-items-center py-2">
+                    <span class="text-muted" data-i18n="about.totalAuthors">Mualliflar</span>
+                    <strong style="color:var(--primary); font-size:1.2rem;">{{ total_authors }}</strong>
+                </div>
+            </div>
+
+            <!-- Ish vaqti -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2rem; box-shadow:var(--shadow-sm);" class="mb-4" data-aos="fade-up">
+                <h5 class="fw-bold mb-3" data-i18n="about.workHours">Ish vaqti</h5>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-clock text-primary"></i>
+                    <span class="text-muted" style="font-size:0.9rem;" data-i18n="about.schedule">Dush-Jum: 09:00 - 21:00</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-calendar-x text-danger"></i>
+                    <span class="text-muted" style="font-size:0.9rem;" data-i18n="about.weekendClosed">Shanba-Yakshanba: Dam olish</span>
+                </div>
+            </div>
+
+            <!-- Contact -->
+            <div style="background:white; border-radius:var(--radius-lg); padding:2rem; box-shadow:var(--shadow-sm);" data-aos="fade-up">
+                <h5 class="fw-bold mb-3" data-i18n="about.contact">Bog'lanish</h5>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-geo-alt text-primary"></i>
+                    <span class="text-muted" style="font-size:0.9rem;" data-i18n="footer.address">Toshkent, O'zbekiston</span>
+                </div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <i class="bi bi-envelope text-primary"></i>
+                    <span class="text-muted" style="font-size:0.9rem;">L2RC@aut-edu.uz</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                    <i class="bi bi-telegram text-primary"></i>
+                    <span class="text-muted" style="font-size:0.9rem;">@AI_librarianbot</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

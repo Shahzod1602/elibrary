@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Kirish — AUT Kutubxona{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <div class="auth-card">
+        <h2 data-i18n="auth.login">Kirish</h2>
+        <p class="auth-subtitle" data-i18n="auth.loginSubtitle">Kutubxona tizimiga kirish</p>
+
+        {% if form.errors %}
+            <div class="alert alert-danger" style="font-size:0.9rem;">
+                <i class="bi bi-exclamation-circle"></i> <span data-i18n="auth.loginError">Foydalanuvchi nomi yoki parol noto'g'ri.</span>
+            </div>
+        {% endif %}
+
+        <form method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+                <label class="form-label fw-bold" style="font-size:0.9rem;" data-i18n="auth.username">Foydalanuvchi nomi</label>
+                <input type="text" name="username" class="form-control form-control-lg"
+                       placeholder="Username kiriting" data-i18n-placeholder="auth.usernamePlaceholder" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold" style="font-size:0.9rem;" data-i18n="auth.password">Parol</label>
+                <input type="password" name="password" class="form-control form-control-lg"
+                       placeholder="Parol kiriting" data-i18n-placeholder="auth.passwordPlaceholder" required>
+            </div>
+            {% if next %}
+                <input type="hidden" name="next" value="{{ next }}">
+            {% endif %}
+            <button type="submit" class="btn btn-primary-lib btn-lg w-100">
+                <i class="bi bi-box-arrow-in-right"></i> <span data-i18n="auth.loginBtn">Kirish</span>
+            </button>
+        </form>
+
+        <div class="text-center mt-4" style="font-size:0.9rem;">
+            <span data-i18n="auth.noAccount">Akkauntingiz yo'qmi?</span>
+            <a href="{% url 'register' %}" class="fw-bold" style="color:var(--accent);" data-i18n="auth.registerLink">Ro'yxatdan o'ting</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

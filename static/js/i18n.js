@@ -28,7 +28,7 @@ const translations = {
     'book.count': { uz: 'kitob', en: 'books' },
 
     // Footer
-    'footer.desc': { uz: "Bilim va ilm-fan markazi. Studentlar uchun eng yaxshi ta'lim resurslari.", en: 'Center of knowledge and science. Best educational resources for students.' },
+    'footer.desc': { uz: "Bilim va ilm-fan markazi. Studentlar uchun eng yaxshi ta'lim resurslari.", en: 'Center of knowledge and science. The best educational resources for students.' },
     'footer.quickLinks': { uz: 'Tezkor havolalar', en: 'Quick links' },
     'footer.categories': { uz: 'Kategoriyalar', en: 'Categories' },
     'footer.programming': { uz: 'Dasturlash', en: 'Programming' },
@@ -38,7 +38,7 @@ const translations = {
     'footer.contact': { uz: "Bog'lanish", en: 'Contact' },
     'footer.address': { uz: "Toshkent, O'zbekiston", en: 'Tashkent, Uzbekistan' },
     'footer.workHours': { uz: 'Dush-Jum: 09:00 - 21:00', en: 'Mon-Fri: 09:00 - 21:00' },
-    'footer.copyright': { uz: 'AUT Kutubxona. Barcha huquqlar himoyalangan.', en: 'AUT Library. All rights reserved.' },
+    'footer.copyright': { uz: 'AUT E-Library. Barcha huquqlar himoyalangan.', en: 'AUT E-Library. All rights reserved.' },
 
     // Catalog
     'catalog.breadcrumb': { uz: 'Katalog', en: 'Catalog' },
@@ -83,7 +83,7 @@ const translations = {
 
     // Auth
     'auth.login': { uz: 'Kirish', en: 'Login' },
-    'auth.loginSubtitle': { uz: 'Kutubxona tizimiga kirish', en: 'Login to the library system' },
+    'auth.loginSubtitle': { uz: 'E-Library tizimiga kirish', en: 'Login to the E-Library system' },
     'auth.loginError': { uz: "Foydalanuvchi nomi yoki parol noto'g'ri.", en: 'Invalid username or password.' },
     'auth.username': { uz: 'Foydalanuvchi nomi', en: 'Username' },
     'auth.usernamePlaceholder': { uz: 'Username kiriting', en: 'Enter username' },
@@ -110,9 +110,9 @@ const translations = {
 
     // About
     'about.title': { uz: 'Biz haqimizda', en: 'About us' },
-    'about.subtitle': { uz: "AUT Kutubxona — bilim, ilm-fan va zamonaviy ta'lim resurslari markazi", en: 'AUT Library — center for knowledge, science and modern educational resources' },
-    'about.heading': { uz: 'Kutubxona haqida', en: 'About the Library' },
-    'about.p1': { uz: "AUT Kutubxonasi universitetimizning markaziy bilim markazi bo'lib, jismoniy fondda 603 ta kitob va 37 ta eKitob mavjud. Kutubxonamiz studentlar, o'qituvchilar va tadqiqotchilar uchun keng qamrovli ta'lim resurslari taqdim etadi.", en: 'AUT Library is the central knowledge hub of our university, with a physical collection of 603 books and 37 eBooks. Our library provides comprehensive educational resources for students, teachers and researchers.' },
+    'about.subtitle': { uz: "AUT E-Library — bilim, ilm-fan va zamonaviy ta'lim resurslari markazi", en: 'AUT E-Library — center for knowledge, science and modern educational resources' },
+    'about.heading': { uz: 'E-Library haqida', en: 'About the E-Library' },
+    'about.p1': { uz: "AUT E-Library universitetimizning markaziy bilim markazi bo'lib, jismoniy fondda 603 ta kitob va 37 ta eKitob mavjud. E-Library studentlar, o'qituvchilar va tadqiqotchilar uchun keng qamrovli ta'lim resurslari taqdim etadi.", en: 'AUT E-Library is the central knowledge hub of our university, with a physical collection of 603 books and 37 eBooks. Our E-Library provides comprehensive educational resources for students, teachers and researchers.' },
     'about.p2': { uz: "Kitoblarni qarz olish uchun kutubxona a'zosi bo'lish kerak. Har bir a'zo bir vaqtning o'zida 3 tagacha kitob olishi mumkin. Kitoblar 14 kun muddatga beriladi, muddatni bir marta 7 kunga uzaytirish mumkin.", en: 'To borrow books, you must be a library member. Each member can borrow up to 3 books at a time. Books are issued for 14 days, with a one-time 7-day extension available.' },
     'about.rulesTitle': { uz: 'Kutubxona qoidalari', en: 'Library Rules' },
     'about.rule1': { uz: "Kutubxonaga ro'yxatdan o'tish uchun talaba guvohnomasi yoki xodim ID kartasi talab qilinadi.", en: 'A student ID or staff ID card is required for library registration.' },
@@ -184,7 +184,7 @@ function applyLanguage(lang) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const lang = localStorage.getItem('siteLang') || 'uz';
+    const lang = localStorage.getItem('siteLang') || 'en';
     applyLanguage(lang);
 
     document.querySelectorAll('.lang-btn').forEach(btn => {

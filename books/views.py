@@ -4,7 +4,7 @@ from django.contrib import messages
 from django.db.models import Q, Avg, Count
 from django.core.paginator import Paginator
 from django.http import JsonResponse
-from .models import Book, Category, Review, Favorite
+from .models import Book, Category, Review, Favorite, Exhibit, Event, News
 from .forms import ReviewForm
 
 
@@ -15,6 +15,9 @@ def home(request):
     total_books = Book.objects.count()
     total_categories = Category.objects.count()
     total_authors = Book.objects.values('author').distinct().count()
+    exhibits = Exhibit.objects.filter(is_active=True)[:4]
+    events = Event.objects.filter(is_active=True)[:3]
+    recent_news = News.objects.filter(is_active=True)[:4]
 
     return render(request, 'books/home.html', {
         'new_books': new_books,
@@ -25,6 +28,9 @@ def home(request):
         'total_authors': total_authors,
         'physical_books': 603,
         'ebooks': 37,
+        'exhibits': exhibits,
+        'events': events,
+        'recent_news': recent_news,
     })
 
 

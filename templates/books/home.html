@@ -114,6 +114,91 @@
     </div>
 </section>
 
+<!-- EXHIBITS -->
+{% if exhibits %}
+<section class="container mt-5">
+    <div class="section-header" data-aos="fade-up">
+        <h2>EXHIBITS</h2>
+    </div>
+    <div class="row g-4">
+        {% for exhibit in exhibits %}
+        <div class="col-lg-6" data-aos="fade-up">
+            <div class="exhibit-card" {% if exhibit.image %}style="background-image: url('{{ exhibit.image.url }}');"{% endif %}>
+                <div class="exhibit-overlay"></div>
+                <div class="exhibit-body">
+                    <h3 class="exhibit-title">{{ exhibit.title }}</h3>
+                    {% if exhibit.subtitle %}
+                        <p class="exhibit-subtitle">{{ exhibit.subtitle }}</p>
+                    {% endif %}
+                    {% if exhibit.date_start or exhibit.date_end %}
+                    <span class="exhibit-date">
+                        {% if exhibit.date_start %}{{ exhibit.date_start|date:"M j, Y"|upper }} THROUGH {% endif %}
+                        {% if exhibit.date_end %}{{ exhibit.date_end|date:"M j, Y"|upper }}{% endif %}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- UPCOMING EVENTS -->
+{% if events %}
+<section class="container mt-5">
+    <div class="section-header" data-aos="fade-up">
+        <h2>UPCOMING EVENTS</h2>
+    </div>
+    <div class="row g-0">
+        {% for event in events %}
+        <div class="col-lg-4 {% if not forloop.last %}event-col-border{% endif %}" data-aos="fade-up">
+            <div class="event-card">
+                <h4 class="event-title">{{ event.title }}</h4>
+                {% if event.category %}
+                    <p class="event-category">{{ event.category|upper }}</p>
+                {% endif %}
+                <span class="event-date-badge">{{ event.date|date:"l, M j, Y"|upper }}</span>
+                <p class="event-time mt-2 mb-0">
+                    {% if event.time_start %}{{ event.time_start|time:"g:i A" }}{% endif %}
+                    {% if event.time_start and event.time_end %} - {% endif %}
+                    {% if event.time_end %}{{ event.time_end|time:"g:i A" }}{% endif %}
+                </p>
+                {% if event.location %}
+                    <p class="event-location">{{ event.location }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+<!-- RECENT NEWS -->
+{% if recent_news %}
+<section class="container mt-5">
+    <div class="section-header" data-aos="fade-up">
+        <h2>RECENT NEWS</h2>
+    </div>
+    <div class="row g-0">
+        {% for item in recent_news %}
+        <div class="col-lg-6 {% if not forloop.last %}news-col-border{% endif %}" data-aos="fade-up">
+            <div class="news-card">
+                {% if item.image %}
+                <img src="{{ item.image.url }}" alt="{{ item.title }}" class="news-thumb">
+                {% endif %}
+                <div class="news-body">
+                    <p class="news-date">{{ item.date|date:"F j, Y" }}</p>
+                    <h5 class="news-title">{{ item.title }}</h5>
+                    <p class="news-desc">{{ item.description|truncatewords:25 }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
 <!-- POPULAR BOOKS -->
 <section class="container mt-5 mb-4">
     <div class="section-header" data-aos="fade-up">

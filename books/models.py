@@ -85,3 +85,55 @@ class Favorite(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.book.title}"
+
+
+class Exhibit(models.Model):
+    title = models.CharField(max_length=200, verbose_name="Title")
+    subtitle = models.CharField(max_length=300, blank=True, verbose_name="Subtitle")
+    image = models.ImageField(upload_to='exhibits/', blank=True, verbose_name="Image")
+    date_start = models.DateField(null=True, blank=True, verbose_name="Start date")
+    date_end = models.DateField(null=True, blank=True, verbose_name="End date")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+    order = models.PositiveSmallIntegerField(default=0, verbose_name="Order")
+
+    class Meta:
+        verbose_name = "Exhibit"
+        verbose_name_plural = "Exhibits"
+        ordering = ['order', '-date_end']
+
+    def __str__(self):
+        return self.title
+
+
+class Event(models.Model):
+    title = models.CharField(max_length=200, verbose_name="Title")
+    category = models.CharField(max_length=100, blank=True, verbose_name="Category")
+    date = models.DateField(verbose_name="Date")
+    time_start = models.TimeField(null=True, blank=True, verbose_name="Start time")
+    time_end = models.TimeField(null=True, blank=True, verbose_name="End time")
+    location = models.CharField(max_length=200, blank=True, verbose_name="Location")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+
+    class Meta:
+        verbose_name = "Event"
+        verbose_name_plural = "Events"
+        ordering = ['date']
+
+    def __str__(self):
+        return self.title
+
+
+class News(models.Model):
+    title = models.CharField(max_length=200, verbose_name="Title")
+    description = models.TextField(verbose_name="Description")
+    image = models.ImageField(upload_to='news/', blank=True, verbose_name="Image")
+    date = models.DateField(verbose_name="Date")
+    is_active = models.BooleanField(default=True, verbose_name="Active")
+
+    class Meta:
+        verbose_name = "News"
+        verbose_name_plural = "News"
+        ordering = ['-date']
+
+    def __str__(self):
+        return self.title

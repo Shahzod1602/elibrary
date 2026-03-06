@@ -7,14 +7,28 @@
     <!-- Profile Header -->
     <div class="profile-header">
         <div class="d-flex align-items-center gap-4">
-            <div class="profile-avatar">{{ user.username|first|upper }}</div>
+            <div class="profile-avatar">
+                {% if user.student_profile %}{{ user.student_profile.last_name|first|upper }}{% else %}{{ user.username|first|upper }}{% endif %}
+            </div>
             <div>
-                <h3 class="fw-bold mb-1">{{ user.username }}</h3>
-                <p class="mb-0" style="opacity:0.8;">
-                    <i class="bi bi-envelope"></i> {{ user.email|default:"Email ko'rsatilmagan" }}
-                </p>
+                {% if user.student_profile %}
+                    <h3 class="fw-bold mb-1">{{ user.student_profile.last_name }} {{ user.student_profile.first_name }}</h3>
+                    <p class="mb-0" style="opacity:0.85;">
+                        <i class="bi bi-mortarboard"></i> {{ user.student_profile.direction }}
+                    </p>
+                    <p class="mb-0" style="opacity:0.85;">
+                        <i class="bi bi-people"></i> Group: {{ user.student_profile.group }}
+                    </p>
+                    {% if user.student_profile.phone %}
+                    <p class="mb-0" style="opacity:0.85;">
+                        <i class="bi bi-telephone"></i> {{ user.student_profile.phone }}
+                    </p>
+                    {% endif %}
+                {% else %}
+                    <h3 class="fw-bold mb-1">{{ user.username }}</h3>
+                {% endif %}
                 <p class="mb-0" style="opacity:0.6; font-size:0.85rem;">
-                    <i class="bi bi-calendar3"></i> {{ user.date_joined|date:"d M, Y" }} <span data-i18n="profile.memberSince">dan beri a'zo</span>
+                    <i class="bi bi-calendar3"></i> Member since {{ user.date_joined|date:"d M, Y" }}
                 </p>
             </div>
         </div>
@@ -24,12 +38,12 @@
     <ul class="nav nav-tabs mb-4" role="tablist">
         <li class="nav-item">
             <a class="nav-link active fw-bold" data-bs-toggle="tab" href="#favorites">
-                <i class="bi bi-heart"></i> <span data-i18n="profile.favorites">Sevimlilar</span> ({{ favorites|length }})
+                <i class="bi bi-heart"></i> Favorites ({{ favorites|length }})
             </a>
         </li>
         <li class="nav-item">
             <a class="nav-link fw-bold" data-bs-toggle="tab" href="#reviews">
-                <i class="bi bi-chat-left-text"></i> <span data-i18n="profile.myReviews">Sharhlarim</span> ({{ user_reviews|length }})
+                <i class="bi bi-chat-left-text"></i> My Reviews ({{ user_reviews|length }})
             </a>
         </li>
     </ul>
@@ -63,7 +77,7 @@
                                     <span class="badge-cat">{{ fav.book.category }}</span>
                                 {% endif %}
                                 <a href="{% url 'toggle_favorite' fav.book.pk %}" class="text-danger"
-                                   title="O'chirish" data-i18n-title="profile.delete"><i class="bi bi-heart-fill"></i></a>
+                                   title="Remove"><i class="bi bi-heart-fill"></i></a>
                             </div>
                         </div>
                     </div>
@@ -73,8 +87,8 @@
             {% else %}
             <div class="text-center py-5">
                 <i class="bi bi-heart display-1 text-muted"></i>
-                <h5 class="mt-3 text-muted" data-i18n="profile.noFavorites">Sevimli kitoblaringiz yo'q</h5>
-                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2" data-i18n="profile.goToCatalog">Katalogga o'tish</a>
+                <h5 class="mt-3 text-muted">You have no favorite books</h5>
+                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2">Go to Catalog</a>
             </div>
             {% endif %}
         </div>
@@ -99,7 +113,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                    <span class="text-muted" style="font-size:0.8rem;">{{ review.created_at|timesince }} <span data-i18n="review.ago">oldin</span></span>
+                    <span class="text-muted" style="font-size:0.8rem;">{{ review.created_at|timesince }} ago</span>
                 </div>
                 <p class="text-muted mt-2 mb-0">{{ review.comment }}</p>
             </div>
@@ -107,8 +121,8 @@
             {% else %}
             <div class="text-center py-5">
                 <i class="bi bi-chat-left-text display-1 text-muted"></i>
-                <h5 class="mt-3 text-muted" data-i18n="profile.noReviews">Hali sharh qoldirmagansiz</h5>
-                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2" data-i18n="profile.viewBooks">Kitoblarni ko'rish</a>
+                <h5 class="mt-3 text-muted">You haven't left any reviews yet</h5>
+                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2">Browse Books</a>
             </div>
             {% endif %}
         </div>

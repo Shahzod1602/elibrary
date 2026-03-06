@@ -7,16 +7,15 @@
 <!-- HERO -->
 <section class="hero text-center">
     <div class="container position-relative">
-        <h1 data-i18n="hero.title">Bilim olish — eng ulug' ibodat</h1>
-        <p class="lead" data-i18n="hero.subtitle">603+ kitob, 37 eKitob, raqamli resurslar va ilmiy bazalar bir joyda</p>
+        <h1>Knowledge is the greatest asset</h1>
+        <p class="lead">603+ books, 37 eBooks, digital resources and scientific databases in one place</p>
         <div class="hero-search">
             <form action="{% url 'catalog' %}" method="GET">
                 <div class="input-group">
                     <input type="text" name="q" class="form-control"
-                           placeholder="Kitob nomi, muallif yoki ISBN qidiring..."
-                           data-i18n-placeholder="hero.placeholder">
+                           placeholder="Search by book title, author or ISBN...">
                     <button class="btn" type="submit">
-                        <i class="bi bi-search"></i> <span data-i18n="hero.search">Qidirish</span>
+                        <i class="bi bi-search"></i> Search
                     </button>
                 </div>
             </form>
@@ -31,19 +30,19 @@
             <div class="col-4">
                 <div class="stat-item">
                     <div class="stat-number">{{ physical_books }}+</div>
-                    <div class="stat-label" data-i18n="stats.physicalBooks">Jismoniy kitoblar</div>
+                    <div class="stat-label">Physical Books</div>
                 </div>
             </div>
             <div class="col-4">
                 <div class="stat-item">
                     <div class="stat-number">{{ ebooks }}</div>
-                    <div class="stat-label" data-i18n="stats.ebooks">eKitoblar</div>
+                    <div class="stat-label">eBooks</div>
                 </div>
             </div>
             <div class="col-4">
                 <div class="stat-item">
                     <div class="stat-number">{{ total_categories }}</div>
-                    <div class="stat-label" data-i18n="stats.categories">Kategoriyalar</div>
+                    <div class="stat-label">Categories</div>
                 </div>
             </div>
         </div>
@@ -53,8 +52,8 @@
 <!-- CATEGORIES -->
 <section class="container mt-5">
     <div class="section-header" data-aos="fade-up">
-        <h2 data-i18n="section.categories">Kategoriyalar</h2>
-        <a href="{% url 'catalog' %}"><span data-i18n="section.viewAll">Barchasini ko'rish</span> <i class="bi bi-arrow-right"></i></a>
+        <h2>Categories</h2>
+        <a href="{% url 'catalog' %}">View all <i class="bi bi-arrow-right"></i></a>
     </div>
     <div class="row row-cols-2 row-cols-md-3 row-cols-lg-6 g-3">
         {% for cat in categories %}
@@ -63,7 +62,7 @@
                 <div class="category-card {% cycle 'cat-teal' 'cat-purple' 'cat-lime' 'cat-gold' 'cat-accent' 'cat-primary' %}">
                     <div class="cat-icon"><i class="bi {{ cat.icon }}"></i></div>
                     <div class="cat-name">{{ cat.name }}</div>
-                    <div class="cat-count">{{ cat.book_count }} <span data-i18n="book.count">kitob</span></div>
+                    <div class="cat-count">{{ cat.book_count }} books</div>
                 </div>
             </a>
         </div>
@@ -74,8 +73,8 @@
 <!-- NEW BOOKS -->
 <section class="container mt-5">
     <div class="section-header" data-aos="fade-up">
-        <h2 data-i18n="section.newBooks">Yangi qo'shilgan kitoblar</h2>
-        <a href="{% url 'catalog' %}?sort=newest"><span data-i18n="section.viewAll">Barchasini ko'rish</span> <i class="bi bi-arrow-right"></i></a>
+        <h2>Newly Added Books</h2>
+        <a href="{% url 'catalog' %}?sort=newest">View all <i class="bi bi-arrow-right"></i></a>
     </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for book in new_books %}
@@ -202,8 +201,8 @@
 <!-- POPULAR BOOKS -->
 <section class="container mt-5 mb-4">
     <div class="section-header" data-aos="fade-up">
-        <h2 data-i18n="section.popularBooks">Mashhur kitoblar</h2>
-        <a href="{% url 'catalog' %}?sort=popular"><span data-i18n="section.viewAll">Barchasini ko'rish</span> <i class="bi bi-arrow-right"></i></a>
+        <h2>Popular Books</h2>
+        <a href="{% url 'catalog' %}?sort=popular">View all <i class="bi bi-arrow-right"></i></a>
     </div>
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
         {% for book in popular_books %}

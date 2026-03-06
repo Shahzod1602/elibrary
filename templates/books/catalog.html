@@ -7,8 +7,8 @@
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}" data-i18n="nav.home">Bosh sahifa</a></li>
-            <li class="breadcrumb-item active" data-i18n="catalog.breadcrumb">Katalog</li>
+            <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+            <li class="breadcrumb-item active">Catalog</li>
         </ol>
     </nav>
 
@@ -20,19 +20,17 @@
                 <input type="hidden" name="sort" value="{{ selected_sort }}">
 
                 <div class="filter-sidebar mb-3">
-                    <h5><i class="bi bi-search"></i> <span data-i18n="catalog.search">Qidirish</span></h5>
-                    <input type="text" name="q" class="form-control" placeholder="Qidirish..."
-                           data-i18n-placeholder="catalog.searchPlaceholder"
+                    <h5><i class="bi bi-search"></i> Search</h5>
+                    <input type="text" name="q" class="form-control" placeholder="Search..."
                            value="{{ query }}" onchange="this.form.submit()">
                 </div>
 
                 <div class="filter-sidebar mb-3">
-                    <h5><i class="bi bi-tag"></i> <span data-i18n="catalog.categories">Kategoriyalar</span></h5>
+                    <h5><i class="bi bi-tag"></i> Categories</h5>
                     <div class="d-flex flex-column gap-1">
                         <a href="{% url 'catalog' %}{% if query %}?q={{ query }}{% endif %}"
-                           class="btn btn-sm {% if not selected_category %}btn-primary-lib{% else %}btn-outline-secondary{% endif %} text-start"
-                           data-i18n="catalog.all">
-                            Barchasi
+                           class="btn btn-sm {% if not selected_category %}btn-primary-lib{% else %}btn-outline-secondary{% endif %} text-start">
+                            All
                         </a>
                         {% for cat in categories %}
                         <a href="?q={{ query }}&category={{ cat.id }}&sort={{ selected_sort }}"
@@ -44,7 +42,7 @@
                 </div>
 
                 <div class="filter-sidebar mb-3">
-                    <h5><i class="bi bi-translate"></i> <span data-i18n="catalog.language">Til</span></h5>
+                    <h5><i class="bi bi-translate"></i> Language</h5>
                     <div class="d-flex flex-column gap-1">
                         {% for lang in languages %}
                         <a href="?q={{ query }}&category={{ selected_category|default:'' }}&language={{ lang }}&sort={{ selected_sort }}"
@@ -62,17 +60,17 @@
             <!-- Sort Bar -->
             <div class="sort-bar">
                 <span class="results-count">
-                    <strong>{{ books.paginator.count }}</strong> <span data-i18n="catalog.booksFound">kitob topildi</span>
+                    <strong>{{ books.paginator.count }}</strong> books found
                 </span>
                 <div class="d-flex align-items-center gap-2">
-                    <span class="text-muted" style="font-size:0.85rem;" data-i18n="catalog.sort">Saralash:</span>
+                    <span class="text-muted" style="font-size:0.85rem;">Sort:</span>
                     <select class="form-select form-select-sm" style="width:auto;"
                             onchange="window.location.href='?q={{ query }}&category={{ selected_category|default:'' }}&language={{ selected_language|default:'' }}&sort='+this.value">
-                        <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %} data-i18n="catalog.newest">Yangilari</option>
-                        <option value="oldest" {% if selected_sort == 'oldest' %}selected{% endif %} data-i18n="catalog.oldest">Eskilari</option>
-                        <option value="title" {% if selected_sort == 'title' %}selected{% endif %} data-i18n="catalog.byName">Nomi bo'yicha</option>
-                        <option value="popular" {% if selected_sort == 'popular' %}selected{% endif %} data-i18n="catalog.popular">Mashhur</option>
-                        <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %} data-i18n="catalog.rating">Reyting</option>
+                        <option value="newest" {% if selected_sort == 'newest' %}selected{% endif %}>Newest</option>
+                        <option value="oldest" {% if selected_sort == 'oldest' %}selected{% endif %}>Oldest</option>
+                        <option value="title" {% if selected_sort == 'title' %}selected{% endif %}>By name</option>
+                        <option value="popular" {% if selected_sort == 'popular' %}selected{% endif %}>Popular</option>
+                        <option value="rating" {% if selected_sort == 'rating' %}selected{% endif %}>Rating</option>
                     </select>
                 </div>
             </div>
@@ -140,9 +138,9 @@
             {% else %}
             <div class="text-center py-5">
                 <i class="bi bi-search display-1 text-muted"></i>
-                <h4 class="mt-3 text-muted" data-i18n="catalog.noBooks">Kitob topilmadi</h4>
-                <p class="text-muted" data-i18n="catalog.noBooksSub">Boshqa so'z bilan qidirib ko'ring yoki filterlarni o'zgartiring</p>
-                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2" data-i18n="catalog.allBooks">Barcha kitoblar</a>
+                <h4 class="mt-3 text-muted">No books found</h4>
+                <p class="text-muted">Try searching with different keywords or change filters</p>
+                <a href="{% url 'catalog' %}" class="btn btn-primary-lib mt-2">All books</a>
             </div>
             {% endif %}
         </div>

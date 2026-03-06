@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,7 +28,7 @@
             <a href="mailto:L2RC@aut-edu.uz"><i class="bi bi-envelope"></i> L2RC@aut-edu.uz</a>
             <a href="https://t.me/AI_librarianbot"><i class="bi bi-telegram"></i> @AI_librarianbot</a>
         </div>
-        <span><i class="bi bi-clock"></i> <span data-i18n="footer.workHours">Dush-Jum: 09:00 - 21:00</span></span>
+        <span><i class="bi bi-clock"></i> Mon-Fri: 09:00 - 21:00</span>
     </div>
 </div>
 
@@ -46,22 +46,18 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}"
-                       href="{% url 'home' %}" data-i18n="nav.home">Bosh sahifa</a>
+                       href="{% url 'home' %}">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'catalog' %}active{% endif %}"
-                       href="{% url 'catalog' %}" data-i18n="nav.catalog">Katalog</a>
+                       href="{% url 'catalog' %}">Catalog</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}"
-                       href="{% url 'about' %}" data-i18n="nav.about">Biz haqimizda</a>
+                       href="{% url 'about' %}">About</a>
                 </li>
             </ul>
             <div class="nav-actions d-flex align-items-center gap-2">
-                <div class="lang-switcher">
-                    <a href="#" class="lang-btn" data-lang="uz">UZ</a>
-                    <a href="#" class="lang-btn" data-lang="en">EN</a>
-                </div>
                 {% if user.is_authenticated %}
                     <a href="{% url 'profile' %}" class="btn btn-outline-dark btn-sm">
                         <i class="bi bi-person-circle"></i> {{ user.username }}
@@ -75,8 +71,7 @@
                         <i class="bi bi-box-arrow-right"></i>
                     </a>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm" data-i18n="nav.login">Kirish</a>
-                    <a href="{% url 'register' %}" class="btn btn-accent btn-sm" data-i18n="nav.register">Ro'yxatdan o'tish</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm">Login</a>
                 {% endif %}
             </div>
         </div>
@@ -106,8 +101,8 @@
         <div class="row g-4">
             <div class="col-lg-4">
                 <h5><img src="{% static 'images/aut-logo-white.svg' %}" alt="AUT" height="30" class="me-2"> E-Library</h5>
-                <p class="mb-3" style="font-size:0.9rem;" data-i18n="footer.desc">
-                    Bilim va ilm-fan markazi. Studentlar uchun eng yaxshi ta'lim resurslari.
+                <p class="mb-3" style="font-size:0.9rem;">
+                    Center of knowledge and science. The best educational resources for students.
                 </p>
                 <div class="d-flex gap-3 footer-social">
                     <a href="https://t.me/AI_librarianbot" target="_blank" rel="noopener"><i class="bi bi-telegram fs-5"></i></a>
@@ -117,22 +112,22 @@
                 </div>
             </div>
             <div class="col-lg-2 col-md-4">
-                <h5 data-i18n="footer.quickLinks">Tezkor havolalar</h5>
-                <a href="{% url 'home' %}" data-i18n="nav.home">Bosh sahifa</a>
-                <a href="{% url 'catalog' %}" data-i18n="nav.catalog">Katalog</a>
-                <a href="{% url 'about' %}" data-i18n="nav.about">Biz haqimizda</a>
+                <h5>Quick Links</h5>
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'catalog' %}">Catalog</a>
+                <a href="{% url 'about' %}">About</a>
             </div>
             <div class="col-lg-3 col-md-4">
-                <h5 data-i18n="footer.categories">Kategoriyalar</h5>
-                <a href="{% url 'catalog' %}?category=" data-i18n="footer.programming">Dasturlash</a>
-                <a href="{% url 'catalog' %}?category=" data-i18n="footer.math">Matematika</a>
-                <a href="{% url 'catalog' %}?category=" data-i18n="footer.physics">Fizika</a>
-                <a href="{% url 'catalog' %}?category=" data-i18n="footer.literature">Adabiyot</a>
+                <h5>Categories</h5>
+                <a href="{% url 'catalog' %}?category=">Programming</a>
+                <a href="{% url 'catalog' %}?category=">Mathematics</a>
+                <a href="{% url 'catalog' %}?category=">Physics</a>
+                <a href="{% url 'catalog' %}?category=">Literature</a>
             </div>
             <div class="col-lg-3 col-md-4">
-                <h5 data-i18n="footer.contact">Bog'lanish</h5>
+                <h5>Contact</h5>
                 <p style="font-size:0.9rem;" class="mb-1">
-                    <i class="bi bi-geo-alt"></i> <span data-i18n="footer.address">Toshkent, O'zbekiston</span>
+                    <i class="bi bi-geo-alt"></i> Tashkent, Uzbekistan
                 </p>
                 <p style="font-size:0.9rem;" class="mb-1">
                     <i class="bi bi-envelope"></i> L2RC@aut-edu.uz
@@ -141,12 +136,12 @@
                     <i class="bi bi-telegram"></i> @AI_librarianbot
                 </p>
                 <p style="font-size:0.9rem;" class="mb-1">
-                    <i class="bi bi-clock"></i> <span data-i18n="footer.workHours">Dush-Jum: 09:00 - 21:00</span>
+                    <i class="bi bi-clock"></i> Mon-Fri: 09:00 - 21:00
                 </p>
             </div>
         </div>
         <div class="footer-bottom text-center">
-            <p class="mb-0">&copy; 2026 <span data-i18n="footer.copyright">AUT E-Library. All rights reserved.</span></p>
+            <p class="mb-0">&copy; 2026 AUT E-Library. All rights reserved.</p>
         </div>
     </div>
 </footer>
@@ -158,7 +153,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
-<script src="{% static 'js/i18n.js' %}"></script>
 <script>
     AOS.init({ duration: 600, once: true, offset: 50 });
     (function(){

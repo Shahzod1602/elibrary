@@ -17,6 +17,7 @@
     --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
     --shadow-lg: 0 10px 30px rgba(0,0,0,0.12);
+    --radius-sm: 4px;
     --radius: 8px;
     --radius-lg: 16px;
     --transition: all 0.3s ease;
@@ -750,7 +751,7 @@ a:hover { color: var(--accent); }
 }
 
 .contact-strip a:hover {
-    color: var(--highlight);
+    color: var(--highlight); /* #e3ff70 — lime accent on dark bg */
     padding-left: 0;
 }
 
@@ -811,23 +812,31 @@ a:hover { color: var(--accent); }
 }
 
 /* ===== COLORED CATEGORY CARDS ===== */
-.cat-teal { border-top: 3px solid var(--primary); }
-.cat-teal .cat-icon { background: rgba(0,52,50,0.08); border-radius: 50%; width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; color: var(--primary); }
-
+.cat-teal  { border-top: 3px solid var(--primary); }
 .cat-purple { border-top: 3px solid #7c3aed; }
-.cat-purple .cat-icon { background: rgba(124,58,237,0.08); border-radius: 50%; width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; color: #7c3aed; }
-
-.cat-lime { border-top: 3px solid #65a30d; }
-.cat-lime .cat-icon { background: rgba(101,163,13,0.08); border-radius: 50%; width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; color: #65a30d; }
-
-.cat-gold { border-top: 3px solid var(--gold); }
-.cat-gold .cat-icon { background: rgba(168,112,38,0.08); border-radius: 50%; width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; color: var(--gold); }
-
+.cat-lime  { border-top: 3px solid #65a30d; }
+.cat-gold  { border-top: 3px solid var(--gold); }
 .cat-accent { border-top: 3px solid var(--accent); }
-.cat-accent .cat-icon { background: rgba(128,0,58,0.08); border-radius: 50%; width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; color: var(--accent); }
-
 .cat-primary { border-top: 3px solid var(--primary-light); }
-.cat-primary .cat-icon { background: rgba(0,79,82,0.08); border-radius: 50%; width: 56px; height: 56px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.5rem; color: var(--primary-light); }
+
+/* Shared cat-icon base */
+[class^="cat-"] .cat-icon,
+[class*=" cat-"] .cat-icon {
+    border-radius: 50%;
+    width: 56px;
+    height: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.cat-teal   .cat-icon { background: rgba(0,52,50,0.08);    color: var(--primary); }
+.cat-purple .cat-icon { background: rgba(124,58,237,0.08); color: #7c3aed; }
+.cat-lime   .cat-icon { background: rgba(101,163,13,0.08); color: #65a30d; }
+.cat-gold   .cat-icon { background: rgba(168,112,38,0.08); color: var(--gold); }
+.cat-accent .cat-icon { background: rgba(128,0,58,0.08);   color: var(--accent); }
+.cat-primary .cat-icon { background: rgba(0,79,82,0.08);   color: var(--primary-light); }
 
 /* ===== FOOTER SOCIAL ICONS ===== */
 .footer-social a {

@@ -77,16 +77,19 @@ def catalog(request):
     elif sort in sort_options:
         books = books.order_by(sort_options[sort])
 
-    # Tillar ro'yxati (filter uchun)
-    languages = Book.objects.values_list('language', flat=True).distinct()
-
     # Sahifalash
     paginator = Paginator(books, 12)
     page = request.GET.get('page')
     books = paginator.get_page(page)
+    page_range = paginator.get_elided_page_range(books.number, on_each_side=1, on_ends=1)
+
+    # Language filter list (deduplicated/normalized)
+    raw_languages = Book.objects.values_list('language', flat=True)
+    languages = sorted({(lang or '').strip() for lang in raw_languages if (lang or '').strip()}, key=str.lower)
 
     return render(request, 'books/catalog.html', {
         'books': books,
+        'page_range': page_range,
         'categories': categories,
         'languages': languages,
         'query': query,

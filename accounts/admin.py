@@ -26,18 +26,6 @@ class CustomUserCreationForm(UserCreationForm):
         user.email = self.cleaned_data["email"]
         if commit:
             user.save()
-            StudentProfile.objects.update_or_create(
-                user=user,
-                defaults={
-                    "first_name": self.cleaned_data["first_name"],
-                    "last_name": self.cleaned_data["last_name"],
-                    "direction": self.cleaned_data["direction"],
-                    "group": self.cleaned_data["group"],
-                    "phone": self.cleaned_data.get("phone", ""),
-                    "id_number": self.cleaned_data["id_number"],
-                    "photo_image": self.cleaned_data.get("photo_image"),
-                },
-            )
         return user
 
 
@@ -89,6 +77,22 @@ class UserAdmin(BaseUserAdmin):
             ),
         }),
     )
+
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
+        if not change:
+            StudentProfile.objects.update_or_create(
+                user=obj,
+                defaults={
+                    "first_name": form.cleaned_data["first_name"],
+                    "last_name": form.cleaned_data["last_name"],
+                    "direction": form.cleaned_data["direction"],
+                    "group": form.cleaned_data["group"],
+                    "phone": form.cleaned_data.get("phone", ""),
+                    "id_number": form.cleaned_data["id_number"],
+                    "photo_image": form.cleaned_data.get("photo_image"),
+                },
+            )
 
     def get_full_name(self, obj):
         try:

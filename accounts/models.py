@@ -9,6 +9,10 @@ class StudentProfile(models.Model):
     direction = models.CharField(max_length=200, verbose_name="Major")
     group = models.CharField(max_length=100, verbose_name="Group")
     phone = models.CharField(max_length=20, blank=True, verbose_name="Phone number")
+    id_number = models.CharField(max_length=50, unique=True, null=True, blank=True, verbose_name="ID number")
+    photo_image = models.ImageField(
+        upload_to='student_photos/', blank=True, null=True, verbose_name="Photo image"
+    )
 
     class Meta:
         verbose_name = "Student profile"

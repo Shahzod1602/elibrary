@@ -7,7 +7,7 @@ from .models import StudentProfile
 class StudentProfileInline(admin.StackedInline):
     model = StudentProfile
     can_delete = False
-    verbose_name = "Talaba ma'lumotlari"
+    verbose_name = "Student profile details"
     fields = ('first_name', 'last_name', 'direction', 'group', 'phone')
 
 
@@ -22,28 +22,28 @@ class UserAdmin(BaseUserAdmin):
             return f"{p.last_name} {p.first_name}"
         except StudentProfile.DoesNotExist:
             return '-'
-    get_full_name.short_description = "Ism Familiya"
+    get_full_name.short_description = "Full name"
 
     def get_direction(self, obj):
         try:
             return obj.student_profile.direction
         except StudentProfile.DoesNotExist:
             return '-'
-    get_direction.short_description = "Yo'nalish"
+    get_direction.short_description = "Major"
 
     def get_group(self, obj):
         try:
             return obj.student_profile.group
         except StudentProfile.DoesNotExist:
             return '-'
-    get_group.short_description = "Guruh"
+    get_group.short_description = "Group"
 
     def get_phone(self, obj):
         try:
             return obj.student_profile.phone
         except StudentProfile.DoesNotExist:
             return '-'
-    get_phone.short_description = "Telefon"
+    get_phone.short_description = "Phone"
 
 
 admin.site.unregister(User)

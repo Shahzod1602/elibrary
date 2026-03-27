@@ -1,11 +1,15 @@
 from django.contrib import admin, messages
+from django.contrib.auth.models import User
+from django.db import transaction
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import path, reverse
+from django.utils import timezone
 
 from openpyxl import load_workbook
 
-from .models import Book, Category, Review, Favorite, Exhibit, Event, News
+from .models import Book, Category, Review, Favorite, Exhibit, Event, News, BorrowRecord
 
 
 @admin.register(Category)
@@ -38,6 +42,11 @@ class BookAdmin(admin.ModelAdmin):
         urls = super().get_urls()
         custom_urls = [
             path(
+                'circulation/',
+                self.admin_site.admin_view(self.circulation_view),
+                name='books_book_circulation',
+            ),
+            path(
                 'import-xlsx/',
                 self.admin_site.admin_view(self.import_xlsx_view),
                 name='books_book_import_xlsx',
@@ -69,6 +78,129 @@ class BookAdmin(admin.ModelAdmin):
             return max(parsed, 0)
         except (TypeError, ValueError):
             return default
+
+    @staticmethod
+    def _resolve_student(identifier):
+        value = (identifier or '').strip()
+        if not value:
+            return None, 'Student identifier is required.'
+
+        matches = User.objects.filter(
+            Q(username__iexact=value) |
+            Q(email__iexact=value) |
+            Q(student_profile__id_number__iexact=value)
+        ).distinct()
+
+        if matches.count() == 0:
+            return None, 'Student not found. Use ID number, username, or email.'
+        if matches.count() > 1:
+            return None, 'Multiple students matched this identifier. Use a unique ID number.'
+        return matches.first(), None
+
+    def circulation_view(self, request):
+        if request.method == 'POST':
+            action = request.POST.get('action_type')
+            barcode = (request.POST.get('barcode') or '').strip()
+            student_identifier = (request.POST.get('student_identifier') or '').strip()
+
+            if not barcode:
+                self.message_user(request, 'Barcode is required.', level=messages.ERROR)
+                return HttpResponseRedirect(request.path)
+
+            if action == 'checkout':
+                student, error = self._resolve_student(student_identifier)
+                if error:
+                    self.message_user(request, error, level=messages.ERROR)
+                    return HttpResponseRedirect(request.path)
+
+                try:
+                    with transaction.atomic():
+                        book = Book.objects.select_for_update().get(barcode=barcode)
+                        if book.quantity < 1:
+                            self.message_user(
+                                request,
+                                f'"{book.title}" is out of stock (quantity=0).',
+                                level=messages.ERROR,
+                            )
+                            return HttpResponseRedirect(request.path)
+
+                        BorrowRecord.objects.create(
+                            book=book,
+                            student=student,
+                            assigned_by=request.user,
+                        )
+                        book.quantity -= 1
+                        book.available = book.quantity > 0
+                        book.save(update_fields=['quantity', 'available'])
+                except Book.DoesNotExist:
+                    self.message_user(request, 'Book not found for this barcode.', level=messages.ERROR)
+                    return HttpResponseRedirect(request.path)
+
+                self.message_user(
+                    request,
+                    f'Checked out: "{book.title}" -> {student.username}. Remaining quantity: {book.quantity}.',
+                    level=messages.SUCCESS,
+                )
+                return HttpResponseRedirect(request.path)
+
+            if action == 'checkin':
+                active_records = BorrowRecord.objects.select_related('book', 'student').filter(
+                    book__barcode=barcode,
+                    checked_in_at__isnull=True,
+                )
+
+                if student_identifier:
+                    student, error = self._resolve_student(student_identifier)
+                    if error:
+                        self.message_user(request, error, level=messages.ERROR)
+                        return HttpResponseRedirect(request.path)
+                    active_records = active_records.filter(student=student)
+
+                if not active_records.exists():
+                    self.message_user(
+                        request,
+                        'No active checkout found for this barcode.',
+                        level=messages.ERROR,
+                    )
+                    return HttpResponseRedirect(request.path)
+
+                if active_records.count() > 1 and not student_identifier:
+                    self.message_user(
+                        request,
+                        'Multiple students have this barcode checked out. Enter student ID/username for check-in.',
+                        level=messages.ERROR,
+                    )
+                    return HttpResponseRedirect(request.path)
+
+                record = active_records.order_by('-checked_out_at').first()
+
+                with transaction.atomic():
+                    locked_book = Book.objects.select_for_update().get(pk=record.book_id)
+                    record.checked_in_at = timezone.now()
+                    record.returned_by = request.user
+                    record.save(update_fields=['checked_in_at', 'returned_by'])
+
+                    locked_book.quantity += 1
+                    locked_book.available = locked_book.quantity > 0
+                    locked_book.save(update_fields=['quantity', 'available'])
+
+                self.message_user(
+                    request,
+                    f'Checked in: "{record.book.title}" from {record.student.username}. Quantity: {locked_book.quantity}.',
+                    level=messages.SUCCESS,
+                )
+                return HttpResponseRedirect(request.path)
+
+            self.message_user(request, 'Unknown action.', level=messages.ERROR)
+            return HttpResponseRedirect(request.path)
+
+        context = dict(
+            self.admin_site.each_context(request),
+            opts=self.model._meta,
+            title='Book circulation (Check In / Check Out)',
+            active_records=BorrowRecord.objects.select_related('book', 'student')[:20],
+        )
+        return render(request, 'admin/books/book/circulation.html', context)
 
     def import_xlsx_view(self, request):
         if request.method == 'POST':
@@ -184,6 +316,13 @@ class ReviewAdmin(admin.ModelAdmin):
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
     list_display = ['user', 'book', 'created_at']
+
+
+@admin.register(BorrowRecord)
+class BorrowRecordAdmin(admin.ModelAdmin):
+    list_display = ['book', 'student', 'checked_out_at', 'checked_in_at', 'assigned_by', 'returned_by']
+    list_filter = ['checked_in_at', 'checked_out_at']
+    search_fields = ['book__title', 'book__barcode', 'student__username', 'student__student_profile__id_number']
 
 
 @admin.register(Exhibit)

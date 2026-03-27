@@ -89,6 +89,27 @@ class Favorite(models.Model):
         return f"{self.user.username} - {self.book.title}"
 
 
+class BorrowRecord(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='borrow_records')
+    student = models.ForeignKey(User, on_delete=models.CASCADE, related_name='borrow_records')
+    checked_out_at = models.DateTimeField(auto_now_add=True)
+    checked_in_at = models.DateTimeField(null=True, blank=True)
+    assigned_by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL, related_name='assigned_borrow_records'
+    )
+    returned_by = models.ForeignKey(
+        User, null=True, blank=True, on_delete=models.SET_NULL, related_name='returned_borrow_records'
+    )
+
+    class Meta:
+        verbose_name = "Borrow record"
+        verbose_name_plural = "Borrow records"
+        ordering = ['-checked_out_at']
+
+    def __str__(self):
+        return f"{self.book.title} -> {self.student.username}"
+
+
 class Exhibit(models.Model):
     title = models.CharField(max_length=200, verbose_name="Title")
     subtitle = models.CharField(max_length=300, blank=True, verbose_name="Subtitle")

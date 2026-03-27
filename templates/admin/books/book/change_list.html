@@ -2,6 +2,9 @@
 
 {% block object-tools-items %}
   <li>
+    <a href="{% url 'admin:books_book_circulation' %}">Check In / Check Out</a>
+  </li>
+  <li>
     <a href="{% url 'admin:books_book_import_xlsx' %}">Import XLSX</a>
   </li>
   {{ block.super }}

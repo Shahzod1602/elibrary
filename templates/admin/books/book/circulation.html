@@ -1,0 +1,70 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <h1>Book circulation (Check In / Check Out)</h1>
+  <p>Use barcode and student ID number (or username/email) to assign or return books.</p>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1rem; margin-top: 1rem;">
+    <div style="border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fff;">
+      <h2 style="margin-top:0;">Check Out</h2>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action_type" value="checkout">
+        <p>
+          <label>Barcode</label><br>
+          <input type="text" name="barcode" required style="width:100%; padding:.5rem;">
+        </p>
+        <p>
+          <label>Student ID / Username / Email</label><br>
+          <input type="text" name="student_identifier" required style="width:100%; padding:.5rem;">
+        </p>
+        <button type="submit" class="default">Check Out</button>
+      </form>
+    </div>
+
+    <div style="border:1px solid #ddd; border-radius:8px; padding:1rem; background:#fff;">
+      <h2 style="margin-top:0;">Check In</h2>
+      <form method="post">
+        {% csrf_token %}
+        <input type="hidden" name="action_type" value="checkin">
+        <p>
+          <label>Barcode</label><br>
+          <input type="text" name="barcode" required style="width:100%; padding:.5rem;">
+        </p>
+        <p>
+          <label>Student ID / Username / Email (optional)</label><br>
+          <input type="text" name="student_identifier" style="width:100%; padding:.5rem;">
+        </p>
+        <button type="submit" class="default">Check In</button>
+      </form>
+    </div>
+  </div>
+
+  <div style="margin-top:2rem;">
+    <h2>Recent borrow records</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Book</th>
+          <th>Barcode</th>
+          <th>Student</th>
+          <th>Checked out</th>
+          <th>Checked in</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for record in active_records %}
+          <tr>
+            <td>{{ record.book.title }}</td>
+            <td>{{ record.book.barcode }}</td>
+            <td>{{ record.student.username }}</td>
+            <td>{{ record.checked_out_at }}</td>
+            <td>{{ record.checked_in_at|default:"-" }}</td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="5">No records yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

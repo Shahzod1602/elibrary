@@ -29,6 +29,8 @@ class Book(models.Model):
     pages = models.PositiveIntegerField(default=0, verbose_name="Page count")
     language = models.CharField(max_length=50, default="Uzbek", verbose_name="Language")
     isbn = models.CharField(max_length=20, blank=True, verbose_name="ISBN")
+    barcode = models.CharField(max_length=100, blank=True, verbose_name="Barcode")
+    quantity = models.PositiveIntegerField(default=1, verbose_name="Quantity")
     publisher = models.CharField(max_length=200, blank=True, verbose_name="Publisher")
     published_year = models.PositiveIntegerField(null=True, blank=True, verbose_name="Publication year")
     available = models.BooleanField(default=True, verbose_name="Available")

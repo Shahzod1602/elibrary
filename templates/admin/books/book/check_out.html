@@ -1,0 +1,20 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+  <h1>Check Out</h1>
+  <p>Assign a book to a student using barcode and student identifier.</p>
+
+  <form method="post" style="max-width: 680px;">
+    {% csrf_token %}
+    <p>
+      <label>Barcode</label><br>
+      <input type="text" name="barcode" required style="width:100%; padding:.5rem;">
+    </p>
+    <p>
+      <label>Student ID / Username / Email</label><br>
+      <input type="text" name="student_identifier" required style="width:100%; padding:.5rem;">
+    </p>
+    <button type="submit" class="default">Check Out</button>
+    <a href="{% url 'admin:books_book_circulation' %}" class="button" style="margin-left:.5rem;">Back</a>
+  </form>
+{% endblock %}

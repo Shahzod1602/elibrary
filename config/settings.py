@@ -17,6 +17,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://elibrary.autplatform.uz',
 ]
 
+ENTRA_TENANT_ID = os.getenv('ENTRA_TENANT_ID', '').strip()
+ENTRA_CLIENT_ID = os.getenv('ENTRA_CLIENT_ID', '').strip()
+ENTRA_CLIENT_SECRET = os.getenv('ENTRA_CLIENT_SECRET', '').strip()
+ENTRA_ENABLED = bool(ENTRA_TENANT_ID and ENTRA_CLIENT_ID and ENTRA_CLIENT_SECRET)
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -38,6 +43,31 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
+if ENTRA_ENABLED:
+    INSTALLED_APPS.append('django_auth_adfs')
+    AUTHENTICATION_BACKENDS.insert(0, 'django_auth_adfs.backend.AdfsAuthCodeBackend')
+
+    AUTH_ADFS = {
+        'AUDIENCE': ENTRA_CLIENT_ID,
+        'CLIENT_ID': ENTRA_CLIENT_ID,
+        'CLIENT_SECRET': ENTRA_CLIENT_SECRET,
+        'TENANT_ID': ENTRA_TENANT_ID,
+        'RELYING_PARTY_ID': ENTRA_CLIENT_ID,
+        'CLAIM_MAPPING': {
+            'first_name': 'given_name',
+            'last_name': 'family_name',
+            'email': 'upn',
+        },
+        'USERNAME_CLAIM': 'upn',
+        'GROUPS_CLAIM': 'roles',
+        'MIRROR_GROUPS': True,
+        'CREATE_NEW_USERS': True,
+    }
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
@@ -51,6 +81,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'books.context_processors.footer_categories',
+                'accounts.context_processors.entra_status',
             ],
         },
     },
@@ -81,7 +112,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-LOGIN_URL = 'login'
+LOGIN_URL = 'django_auth_adfs:login' if ENTRA_ENABLED else 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 

@@ -17,10 +17,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://elibrary.autplatform.uz',
 ]
 
-ENTRA_TENANT_ID = os.getenv('ENTRA_TENANT_ID', '').strip()
-ENTRA_CLIENT_ID = os.getenv('ENTRA_CLIENT_ID', '').strip()
-ENTRA_CLIENT_SECRET = os.getenv('ENTRA_CLIENT_SECRET', '').strip()
-ENTRA_ENABLED = bool(ENTRA_TENANT_ID and ENTRA_CLIENT_ID and ENTRA_CLIENT_SECRET)
+SAML_BASE_URL = os.getenv('SAML_BASE_URL', 'http://localhost:8000').rstrip('/')
+SAML_ENTRA_METADATA_URL = os.getenv('SAML_ENTRA_METADATA_URL', '').strip()
+SAML_ENTRA_ENTITY_ID = os.getenv('SAML_ENTRA_ENTITY_ID', '').strip()
+SAML_CERT_DIR = BASE_DIR / 'saml_certs'
+ENTRA_ENABLED = bool(SAML_ENTRA_METADATA_URL and SAML_ENTRA_ENTITY_ID)
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -48,24 +49,59 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 if ENTRA_ENABLED:
-    INSTALLED_APPS.append('django_auth_adfs')
-    AUTHENTICATION_BACKENDS.insert(0, 'django_auth_adfs.backend.AdfsAuthCodeBackend')
+    import saml2
+    from saml2.saml import NAMEID_FORMAT_EMAILADDRESS
 
-    AUTH_ADFS = {
-        'AUDIENCE': ENTRA_CLIENT_ID,
-        'CLIENT_ID': ENTRA_CLIENT_ID,
-        'CLIENT_SECRET': ENTRA_CLIENT_SECRET,
-        'TENANT_ID': ENTRA_TENANT_ID,
-        'RELYING_PARTY_ID': ENTRA_CLIENT_ID,
-        'CLAIM_MAPPING': {
-            'first_name': 'given_name',
-            'last_name': 'family_name',
-            'email': 'upn',
+    INSTALLED_APPS.append('djangosaml2')
+    AUTHENTICATION_BACKENDS.insert(0, 'djangosaml2.backends.Saml2Backend')
+    MIDDLEWARE.append('djangosaml2.middleware.SamlSessionMiddleware')
+
+    SESSION_COOKIE_SECURE = not DEBUG
+    SAML_SESSION_COOKIE_NAME = 'saml_session'
+    SAML_SESSION_COOKIE_SAMESITE = 'None' if not DEBUG else 'Lax'
+
+    SAML_CREATE_UNKNOWN_USER = True
+    SAML_USE_NAME_ID_AS_USERNAME = False
+    SAML_DJANGO_USER_MAIN_ATTRIBUTE = 'username'
+    SAML_CSP_HANDLER = ''
+
+    SAML_ATTRIBUTE_MAPPING = {
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name': ('username',),
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress': ('email',),
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname': ('first_name',),
+        'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname': ('last_name',),
+    }
+
+    SAML_CONFIG = {
+        'xmlsec_binary': os.getenv('XMLSEC_BINARY', '/opt/homebrew/bin/xmlsec1'),
+        'entityid': f'{SAML_BASE_URL}/saml2/metadata/',
+        'allow_unknown_attributes': True,
+        'service': {
+            'sp': {
+                'name': 'AUT E-Library',
+                'name_id_format': NAMEID_FORMAT_EMAILADDRESS,
+                'endpoints': {
+                    'assertion_consumer_service': [
+                        (f'{SAML_BASE_URL}/saml2/acs/', saml2.BINDING_HTTP_POST),
+                    ],
+                    'single_logout_service': [
+                        (f'{SAML_BASE_URL}/saml2/ls/', saml2.BINDING_HTTP_REDIRECT),
+                        (f'{SAML_BASE_URL}/saml2/ls/post/', saml2.BINDING_HTTP_POST),
+                    ],
+                },
+                'required_attributes': ['emailaddress'],
+                'optional_attributes': ['givenname', 'surname', 'name'],
+                'allow_unsolicited': True,
+                'authn_requests_signed': False,
+                'logout_requests_signed': True,
+                'want_assertions_signed': True,
+                'want_response_signed': False,
+            },
         },
-        'USERNAME_CLAIM': 'upn',
-        'GROUPS_CLAIM': 'roles',
-        'MIRROR_GROUPS': True,
-        'CREATE_NEW_USERS': True,
+        'metadata': {
+            'remote': [{'url': SAML_ENTRA_METADATA_URL}],
+        },
+        'debug': DEBUG,
     }
 
 ROOT_URLCONF = 'config.urls'
@@ -112,7 +148,7 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-LOGIN_URL = 'django_auth_adfs:login' if ENTRA_ENABLED else 'login'
+LOGIN_URL = 'saml2_login' if ENTRA_ENABLED else 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 

@@ -1,51 +1,84 @@
-# Microsoft Entra ID (Azure AD) — Enterprise Application bilan integratsiya
+# Microsoft Entra ID — SAML SSO bilan integratsiya
 
-Bu loyiha `django-auth-adfs` orqali Microsoft Entra ID bilan SSO ulangan. Quyidagi qadamlar bo'yicha Azure tomonidagi sozlashni bajaring.
+Loyiha `djangosaml2` orqali Microsoft Entra ID bilan **SAML 2.0 SSO** ulangan
+(AXIO SSO uslubidagi sozlama). Client secret kerak emas — autentifikatsiya
+sertifikat orqali amalga oshiriladi.
+
+## Tizim talablari
+
+Serverda `xmlsec1` binarisi bo'lishi shart:
+
+```bash
+# Ubuntu/Debian
+sudo apt install xmlsec1 libxmlsec1-dev libxmlsec1-openssl
+
+# macOS
+brew install libxmlsec1 xmlsec1
+```
 
 ## 1) Azure portalda Enterprise Application yaratish
 
-1. https://entra.microsoft.com → **Microsoft Entra ID** → **App registrations** → **New registration**
-2. Maydonlarni to'ldiring:
-   - **Name**: `AUT E-Library`
-   - **Supported account types**: *Accounts in this organizational directory only* (single tenant)
-   - **Redirect URI** (Platform = **Web**):
-     - Production: `https://elibrary.autplatform.uz/oauth2/callback`
-     - Local dev: `http://localhost:8000/oauth2/callback`
-3. **Register** bosing.
+1. https://entra.microsoft.com → **Enterprise applications** → **New application**
+2. **Create your own application** bosing.
+3. Nomi: `AUT E-Library`
+4. **Integrate any other application you don't find in the gallery (Non-gallery)** ni tanlang → **Create**.
 
-## 2) Client Secret yaratish
+## 2) SAML Single Sign-On sozlash
 
-1. Yangi yaratilgan app ichida → **Certificates & secrets** → **New client secret**
-2. Description: `autlibrary-prod`, Expires: `24 months`
-3. **Value** ustunidagi qiymatni nusxalang — bu **CLIENT_SECRET**. (Bir marta ko'rinadi!)
+App yaratilgach:
 
-## 3) API permissions
+1. Chap menyudan **Single sign-on** → **SAML** ni tanlang.
+2. **Basic SAML Configuration** bo'limini tahrirlang:
+   - **Identifier (Entity ID)**: `https://elibrary.autplatform.uz/saml2/metadata/`
+     - (Lokal dev uchun: `http://localhost:8000/saml2/metadata/`)
+   - **Reply URL (ACS URL)**: `https://elibrary.autplatform.uz/saml2/acs/`
+     - (Lokal dev uchun: `http://localhost:8000/saml2/acs/`)
+   - **Sign on URL** (ixtiyoriy): `https://elibrary.autplatform.uz/account/login/`
+   - **Logout URL**: `https://elibrary.autplatform.uz/saml2/ls/`
+3. **Save** bosing.
 
-1. **API permissions** → **Add a permission** → **Microsoft Graph** → **Delegated permissions**
-2. Quyidagilarni qo'shing:
-   - `openid`
-   - `profile`
-   - `email`
-   - `User.Read`
-3. **Grant admin consent for ...** tugmasini bosing.
+## 3) User Attributes & Claims
 
-## 4) (Ixtiyoriy) Token claims — guruhlar/rollar
+Bo'limni tahrirlang va quyidagi claim'larni qo'shing (Microsoft Entra'da
+odatda standart bo'lib turadi):
 
-Agar rol/guruhlar bilan ishlash kerak bo'lsa:
-- **Token configuration** → **Add groups claim** → *Security groups* (yoki *App roles*)
-- Yoki **App roles** → kerakli rollarni yarating va Enterprise Application → **Users and groups** orqali tayinlang.
+| Claim name | Source attribute |
+|---|---|
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name` | `user.userprincipalname` |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | `user.mail` |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | `user.givenname` |
+| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname` | `user.surname` |
 
-## 5) Loyihadagi `.env` faylini to'ldirish
+Unique User Identifier (Name ID) = `user.userprincipalname` (format: Email).
 
-`Overview` sahifasidan quyidagilarni nusxalab `.env` ga yozing:
+## 4) Foydalanuvchilarni biriktirish
 
-```env
-ENTRA_TENANT_ID=<Directory (tenant) ID>
-ENTRA_CLIENT_ID=<Application (client) ID>
-ENTRA_CLIENT_SECRET=<2-qadamda olingan secret value>
+1. **Users and groups** → **Add user/group** → kerakli xodimlar yoki guruhni qo'shing.
+2. **App roles** bo'limida (xohlasangiz) `User` va `msiam_access` rollarini ko'rasiz.
+
+## 5) Metadata URL'ni nusxalash
+
+SAML SSO sahifasida **App Federation Metadata Url** bor:
+
+```
+https://login.microsoftonline.com/<TENANT_ID>/federationmetadata/2007-06/federationmetadata.xml?appid=<APP_ID>
 ```
 
-## 6) Loyihani ishga tushirish
+Bu URL'ni nusxalang.
+
+## 6) Loyihadagi `.env`ni to'ldirish
+
+```env
+SAML_BASE_URL=https://elibrary.autplatform.uz
+SAML_ENTRA_METADATA_URL=https://login.microsoftonline.com/<TENANT_ID>/federationmetadata/2007-06/federationmetadata.xml?appid=<APP_ID>
+SAML_ENTRA_ENTITY_ID=https://sts.windows.net/<TENANT_ID>/
+```
+
+- `SAML_BASE_URL` — sizning domeningiz (lokal dev uchun `http://localhost:8000`).
+- `SAML_ENTRA_METADATA_URL` — 5-qadamdan olingan URL.
+- `SAML_ENTRA_ENTITY_ID` — Azure tomonida ko'rinadigan Microsoft Entra Identifier (odatda `https://sts.windows.net/<TENANT_ID>/`).
+
+## 7) Loyihani ishga tushirish
 
 ```bash
 source venv/bin/activate
@@ -55,20 +88,31 @@ python manage.py runserver
 ```
 
 `/account/login/` sahifasida **Sign in with Microsoft** tugmasi ko'rinadi.
-Tugma bosilganda foydalanuvchi Microsoft login sahifasiga yo'naltiriladi va muvaffaqiyatli login'dan keyin Django'ga `User` yozuvi avtomatik yaratiladi (claim mapping: `given_name`, `family_name`, `upn → email/username`).
+Bosish → Microsoft login → muvaffaqiyatdan keyin Django'ga avtomatik
+`User` yozuvi yaratiladi (claim mapping: `givenname → first_name`,
+`surname → last_name`, `emailaddress → email`, `name → username`).
 
-## Texnik tafsilotlar
+## SAML endpoint'lari
 
-- **Callback URL**: `/oauth2/callback`
-- **Login URL**: `/oauth2/login`
-- **Logout**: oddiy Django logout (`/account/logout/`); single-sign-out kerak bo'lsa, `django_auth_adfs.views.OAuth2LogoutView` qo'shing.
-- **Username manbasi**: `upn` claim (odatda foydalanuvchining email-formatdagi UPN'i).
-- **Yangi foydalanuvchi**: `CREATE_NEW_USERS = True` — Entra'da bo'lgan har bir kishi avtomatik Django foydalanuvchisiga aylanadi.
-- **Mahalliy login**: Entra env-lar bo'sh bo'lsa, loyiha eski username/password rejimida ishlaydi (`ENTRA_ENABLED = False`).
+- **Metadata**: `https://elibrary.autplatform.uz/saml2/metadata/`
+- **ACS (Reply URL)**: `https://elibrary.autplatform.uz/saml2/acs/`
+- **Login**: `https://elibrary.autplatform.uz/saml2/login/`
+- **Logout**: `https://elibrary.autplatform.uz/saml2/ls/`
 
 ## Tekshirish
 
 ```bash
-python manage.py check        # konfiguratsiya xatosiz
-python manage.py runserver    # → http://localhost:8000/account/login/
+python manage.py check          # konfiguratsiya xatosiz
+curl -s http://localhost:8000/saml2/metadata/ | head -20   # SP metadata XML
+python manage.py runserver
 ```
+
+## Eslatma
+
+- **Sertifikat**: SAML responselari Microsoft tomondan sertifikat bilan
+  imzolanadi. Sertifikat metadata URL ichida avtomatik yangilanadi —
+  qo'lda yuklab olish shart emas.
+- **Lokal HTTPS**: Production'da `SAML_SESSION_COOKIE_SAMESITE='None'` ishlatish
+  uchun HTTPS zarur (`SESSION_COOKIE_SECURE=True` avtomatik o'rnatiladi).
+- **Mahalliy login**: SAML env-lar bo'sh bo'lsa, loyiha eski username/password
+  rejimida ishlaydi (`ENTRA_ENABLED = False`).

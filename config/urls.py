@@ -10,7 +10,7 @@ urlpatterns = [
 ]
 
 if getattr(settings, 'ENTRA_ENABLED', False):
-    urlpatterns.insert(1, path('oauth2/', include('django_auth_adfs.urls')))
+    urlpatterns.insert(1, path('saml2/', include('djangosaml2.urls')))
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

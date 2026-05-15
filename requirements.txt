@@ -3,4 +3,4 @@ pillow
 python-dotenv
 gunicorn
 openpyxl
-django-auth-adfs>=1.14
+djangosaml2>=1.9

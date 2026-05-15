@@ -73,7 +73,7 @@ if ENTRA_ENABLED:
     }
 
     SAML_CONFIG = {
-        'xmlsec_binary': os.getenv('XMLSEC_BINARY', '/opt/homebrew/bin/xmlsec1'),
+        'xmlsec_binary': os.getenv('XMLSEC_BINARY', '/usr/bin/xmlsec1'),
         'entityid': f'{SAML_BASE_URL}/saml2/metadata/',
         'allow_unknown_attributes': True,
         'service': {

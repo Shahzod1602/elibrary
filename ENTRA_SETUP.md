@@ -1,84 +1,81 @@
-# Microsoft Entra ID — SAML SSO bilan integratsiya
+# Microsoft Entra ID — OIDC SSO bilan integratsiya
 
-Loyiha `djangosaml2` orqali Microsoft Entra ID bilan **SAML 2.0 SSO** ulangan
-(AXIO SSO uslubidagi sozlama). Client secret kerak emas — autentifikatsiya
-sertifikat orqali amalga oshiriladi.
+Loyiha `authlib` orqali Microsoft Entra ID bilan **OpenID Connect (OIDC) /
+OAuth2 Authorization Code** oqimida ulangan — xuddi **AXIO SSO** kabi
+(`/api/sso/callback`, ID token). Bu confidential web app — **client secret**
+ishlatiladi.
 
-## Tizim talablari
+## 1) App registration yaratish
 
-Serverda `xmlsec1` binarisi bo'lishi shart:
+1. https://entra.microsoft.com → **App registrations** → **New registration**
+2. Nomi: `AUT E-Library`
+3. **Supported account types**: odatda *Accounts in this organizational directory only* (single tenant)
+4. **Redirect URI**: platforma **Web**, qiymat:
+   - Production: `https://elibrary.autplatform.uz/api/sso/callback`
+   - Lokal dev: `http://localhost:8000/api/sso/callback`
+5. **Register** bosing.
 
-```bash
-# Ubuntu/Debian
-sudo apt install xmlsec1 libxmlsec1-dev libxmlsec1-openssl
+> Keyin xohlagancha **Authentication** bo'limidan yana Redirect URI qo'shsa
+> bo'ladi (masalan, lokal va production'ni bir vaqtda saqlash uchun).
 
-# macOS
-brew install libxmlsec1 xmlsec1
-```
+## 2) Authentication sozlamalari
 
-## 1) Azure portalda Enterprise Application yaratish
+**Authentication** bo'limida (screenshotdagidek):
 
-1. https://entra.microsoft.com → **Enterprise applications** → **New application**
-2. **Create your own application** bosing.
-3. Nomi: `AUT E-Library`
-4. **Integrate any other application you don't find in the gallery (Non-gallery)** ni tanlang → **Create**.
+- **Platform configurations → Web → Redirect URIs**: yuqoridagi callback URL.
+- **Settings** tab → **Implicit grant and hybrid flows**:
+  - ☑ **ID tokens (used for implicit and hybrid flows)**
+  - ☐ Access tokens — kerak emas (kod o'rtada token oladi)
+- **Allow public client flows**: **Disabled** (confidential app).
 
-## 2) SAML Single Sign-On sozlash
+## 3) Client secret yaratish
 
-App yaratilgach:
+**Certificates & secrets** → **Client secrets** → **New client secret**:
 
-1. Chap menyudan **Single sign-on** → **SAML** ni tanlang.
-2. **Basic SAML Configuration** bo'limini tahrirlang:
-   - **Identifier (Entity ID)**: `https://elibrary.autplatform.uz/saml2/metadata/`
-     - (Lokal dev uchun: `http://localhost:8000/saml2/metadata/`)
-   - **Reply URL (ACS URL)**: `https://elibrary.autplatform.uz/saml2/acs/`
-     - (Lokal dev uchun: `http://localhost:8000/saml2/acs/`)
-   - **Sign on URL** (ixtiyoriy): `https://elibrary.autplatform.uz/account/login/`
-   - **Logout URL**: `https://elibrary.autplatform.uz/saml2/ls/`
-3. **Save** bosing.
+- Description: `elibrary`
+- Expires: tashkilot siyosatiga ko'ra (masalan, 24 oy)
+- **Value**'ni darhol nusxalang — bu `ENTRA_CLIENT_SECRET` bo'ladi (keyin ko'rinmaydi!).
 
-## 3) User Attributes & Claims
+## 4) Token configuration (claim'lar)
 
-Bo'limni tahrirlang va quyidagi claim'larni qo'shing (Microsoft Entra'da
-odatda standart bo'lib turadi):
+Standart `openid email profile` scope'lari quyidagilarni beradi:
 
-| Claim name | Source attribute |
-|---|---|
-| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name` | `user.userprincipalname` |
-| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | `user.mail` |
-| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | `user.givenname` |
-| `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname` | `user.surname` |
+| Claim | Manba | Django maydoni |
+|---|---|---|
+| `email` / `preferred_username` | user.mail / UPN | `username` + `email` |
+| `given_name` | user.givenname | `first_name` |
+| `family_name` | user.surname | `last_name` |
 
-Unique User Identifier (Name ID) = `user.userprincipalname` (format: Email).
+Agar `email` claim'i kelmasa, **Token configuration → Add optional claim →
+ID → email** orqali qo'shish mumkin (kod baribir `preferred_username`'ga
+fallback qiladi).
 
-## 4) Foydalanuvchilarni biriktirish
+## 5) Foydalanuvchilarni biriktirish
 
-1. **Users and groups** → **Add user/group** → kerakli xodimlar yoki guruhni qo'shing.
-2. **App roles** bo'limida (xohlasangiz) `User` va `msiam_access` rollarini ko'rasiz.
-
-## 5) Metadata URL'ni nusxalash
-
-SAML SSO sahifasida **App Federation Metadata Url** bor:
-
-```
-https://login.microsoftonline.com/<TENANT_ID>/federationmetadata/2007-06/federationmetadata.xml?appid=<APP_ID>
-```
-
-Bu URL'ni nusxalang.
+**Enterprise applications → AUT E-Library → Users and groups → Add user/group**
+orqali kerakli xodim/talaba yoki guruhni qo'shing.
+(App roles'da Microsoft avtomatik `User` va `msiam_access` rollarini yaratadi.)
 
 ## 6) Loyihadagi `.env`ni to'ldirish
 
 ```env
-SAML_BASE_URL=https://elibrary.autplatform.uz
-SAML_ENTRA_METADATA_URL=https://login.microsoftonline.com/<TENANT_ID>/federationmetadata/2007-06/federationmetadata.xml?appid=<APP_ID>
-SAML_ENTRA_ENTITY_ID=https://sts.windows.net/<TENANT_ID>/
+SSO_BASE_URL=https://elibrary.autplatform.uz
+ENTRA_TENANT_ID=<Directory (tenant) ID>
+ENTRA_CLIENT_ID=<Application (client) ID>
+ENTRA_CLIENT_SECRET=<client secret Value>
+# ixtiyoriy (default: {SSO_BASE_URL}/api/sso/callback):
+# ENTRA_REDIRECT_URI=https://elibrary.autplatform.uz/api/sso/callback
 ```
 
-- `SAML_BASE_URL` — sizning domeningiz (lokal dev uchun `http://localhost:8000`).
-- `SAML_ENTRA_METADATA_URL` — 5-qadamdan olingan URL.
-- `SAML_ENTRA_ENTITY_ID` — Azure tomonida ko'rinadigan Microsoft Entra Identifier (odatda `https://sts.windows.net/<TENANT_ID>/`).
+- `ENTRA_TENANT_ID`, `ENTRA_CLIENT_ID` — App registration **Overview** sahifasida.
+- `ENTRA_CLIENT_SECRET` — 3-qadamdagi **Value**.
+- Lokal dev uchun `SSO_BASE_URL=http://localhost:8000`.
 
-## 7) Loyihani ishga tushirish
+Uchala qiymat to'ldirilsa `ENTRA_ENABLED = True` bo'ladi va login sahifasida
+**Sign in with Microsoft** tugmasi paydo bo'ladi. Bo'sh bo'lsa — oddiy
+username/parol rejimi (`ENTRA_ENABLED = False`).
+
+## 7) Ishga tushirish
 
 ```bash
 source venv/bin/activate
@@ -87,32 +84,33 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-`/account/login/` sahifasida **Sign in with Microsoft** tugmasi ko'rinadi.
-Bosish → Microsoft login → muvaffaqiyatdan keyin Django'ga avtomatik
-`User` yozuvi yaratiladi (claim mapping: `givenname → first_name`,
-`surname → last_name`, `emailaddress → email`, `name → username`).
+`/account/login/` → **Sign in with Microsoft** → Microsoft login →
+muvaffaqiyatdan keyin Django'da `User` avtomatik yaratiladi/yangilanadi va
+tizimga kiritiladi (`given_name → first_name`, `family_name → last_name`,
+`email`/`preferred_username → username`).
 
-## SAML endpoint'lari
+## SSO endpoint'lari
 
-- **Metadata**: `https://elibrary.autplatform.uz/saml2/metadata/`
-- **ACS (Reply URL)**: `https://elibrary.autplatform.uz/saml2/acs/`
-- **Login**: `https://elibrary.autplatform.uz/saml2/login/`
-- **Logout**: `https://elibrary.autplatform.uz/saml2/ls/`
+- **Login**:    `https://elibrary.autplatform.uz/api/sso/login`
+- **Callback (Redirect URI)**: `https://elibrary.autplatform.uz/api/sso/callback`
+- **Logout**:   `https://elibrary.autplatform.uz/account/logout/` (Django sessiyasini tozalaydi)
 
 ## Tekshirish
 
 ```bash
-python manage.py check          # konfiguratsiya xatosiz
-curl -s http://localhost:8000/saml2/metadata/ | head -20   # SP metadata XML
+python manage.py check
 python manage.py runserver
+# /account/login/ sahifasida Microsoft tugmasini bosib oqimni sinab ko'ring
 ```
 
 ## Eslatma
 
-- **Sertifikat**: SAML responselari Microsoft tomondan sertifikat bilan
-  imzolanadi. Sertifikat metadata URL ichida avtomatik yangilanadi —
-  qo'lda yuklab olish shart emas.
-- **Lokal HTTPS**: Production'da `SAML_SESSION_COOKIE_SAMESITE='None'` ishlatish
-  uchun HTTPS zarur (`SESSION_COOKIE_SECURE=True` avtomatik o'rnatiladi).
-- **Mahalliy login**: SAML env-lar bo'sh bo'lsa, loyiha eski username/password
-  rejimida ishlaydi (`ENTRA_ENABLED = False`).
+- **Client secret muddati**: tugashidan oldin yangisini yarating va `.env`ni
+  yangilang (eski va yangi secret bir muddat birga turishi mumkin).
+- **HTTPS**: production'da `SESSION_COOKIE_SECURE`/`CSRF_COOKIE_SECURE`
+  avtomatik yoqiladi (`DEBUG=False` bo'lganda). Redirect URI ham `https://`
+  bo'lishi shart.
+- **xmlsec1 kerak emas**: OIDC SAML emas — Docker image'dan `xmlsec1` olib
+  tashlandi.
+- **Admin login**: superuser'lar baribir `/admin/login/` orqali parol bilan
+  kira oladi (SSO'dan mustaqil).

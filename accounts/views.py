@@ -13,6 +13,7 @@ from django.contrib import messages
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.models import User
 from django.shortcuts import redirect
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from .models import StudentProfile
 
@@ -85,5 +86,12 @@ def sso_callback(request):
 
     auth_login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
-    next_url = request.session.pop('sso_next', '') or 'home'
+    # Open redirect'dan himoya: faqat shu saytning ichki URL'lariga ruxsat
+    next_url = request.session.pop('sso_next', '')
+    if not url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        next_url = 'home'
     return redirect(next_url)

@@ -54,7 +54,7 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 # Production'da (HTTPS) cookie'larni xavfsizlash
-if ENTRA_ENABLED and not DEBUG:
+if not DEBUG:
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
 
